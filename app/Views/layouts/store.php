@@ -42,13 +42,14 @@ $meta = $meta ?? ['full_title' => 'URAVEX Apparel', 'description' => '', 'noinde
 <?php endforeach; ?>
 </head>
 <body>
+<span id="top" tabindex="-1"></span>
 <a class="skip-link" href="#main">Skip to content</a>
 <?php if (!empty($announcement['enabled']) && trim((string) ($announcement['text'] ?? '')) !== ''): ?>
 <div class="announcement">
   <?php if (!empty($announcement['link'])): ?><a href="<?= e(url($announcement['link'])) ?>"><?= e($announcement['text']) ?></a><?php else: ?><span><?= e($announcement['text']) ?></span><?php endif; ?>
 </div>
 <?php endif; ?>
-<header class="site-header" id="top">
+<header class="site-header">
   <div class="container header-inner">
     <div class="header-left">
       <button class="icon-btn menu-toggle" type="button" aria-label="Open menu" aria-controls="mobile-menu" aria-expanded="false" data-drawer-open="mobile-menu"><?= icon('menu') ?></button>

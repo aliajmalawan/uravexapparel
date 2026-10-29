@@ -328,6 +328,17 @@
     });
   }
 
+  /* ---------- Back to top: always scroll (the header is sticky, so a plain #top jump can be a no-op) ---------- */
+  $$('a[href="#top"]').forEach((link) => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
+      const target = document.getElementById('top');
+      if (target) target.focus({ preventScroll: true }); // keyboard users continue from the top
+    });
+  });
+
   /* ---------- Copy buttons (wallet address, crypto amount) ---------- */
   $$('[data-copy]').forEach((btn) => {
     btn.addEventListener('click', () => {

@@ -1138,3 +1138,6 @@ img, svg, video { max-width: 100%; }
   .admin-main .admin-table.stack-sm tr, .seller-panel .admin-table.stack-sm tr { padding: var(--s-3) 0; }
 }
 @media (max-width: 767px) { .admin-main .admin-table.stack-sm td img, .seller-panel .admin-table.stack-sm td img { display: block; margin: 4px 0 0; } }
+/* Leave room for the fixed bottom bars so the end of the footer (Back to top) is never covered */
+@media (max-width: 767px) { body { padding-bottom: calc(68px + env(safe-area-inset-bottom)); } body:has(.sticky-buy.is-visible) { padding-bottom: calc(140px + env(safe-area-inset-bottom)); } }
+@media (min-width: 768px) and (max-width: 1023px) { body:has(.sticky-buy.is-visible) { padding-bottom: 76px; } }
