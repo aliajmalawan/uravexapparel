@@ -1,0 +1,18 @@
+# URAVEX Apparel — project root.
+# Every request is routed into /public. Source code, storage, database
+# migrations, tests, docs and .env are never served.
+Options -Indexes -MultiViews
+DirectoryIndex index.php
+
+<FilesMatch "^\.|\.(env|sql|md|log|lock|ini|sh|bak|json)$">
+    Require all denied
+</FilesMatch>
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    # Block direct access to private directories.
+    RewriteRule ^(app|bin|database|storage|tests|docs|resources|backups)(/|$) - [F,L]
+    # Route everything else into public/.
+    RewriteCond %{REQUEST_URI} !/public/
+    RewriteRule ^(.*)$ public/$1 [L]
+</IfModule>
