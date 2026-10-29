@@ -249,24 +249,37 @@ $grid = static function (array $items, array $wishlistIds): string {
   <?php endif; ?>
 </div>
 
-<?php /* ── Sign-up call to action (guests) / deals by email (signed in) ── */ ?>
+<?php /* ── Membership: sign-up for guests, deals by email for signed-in customers ── */ ?>
 <?php if (!empty($sec['show_signup'])): ?>
-<section class="m-signup on-dark" aria-labelledby="signup-title">
-  <div class="container center container-narrow">
-    <span class="m-pill"><?= e($sec['signup_eyebrow']) ?></span>
-    <h2 id="signup-title"><?= e($sec['signup_title']) ?></h2>
-    <p><?= e($sec['signup_body']) ?></p>
-    <?php if (!$user): ?>
-      <a class="btn btn-primary m-signup-btn" href="<?= e(url('/register')) ?>"><?= e($sec['signup_cta']) ?> <?= icon('arrow-right', 'icon icon-sm') ?></a>
-    <?php else: ?>
-      <form class="newsletter-form" method="post" action="<?= e(url('/newsletter')) ?>">
-        <?= csrf_field() ?>
-        <label class="sr-only" for="su-email">Email address</label>
-        <input class="input" id="su-email" type="email" name="email" required autocomplete="email" value="<?= e($user['email']) ?>">
-        <input type="text" name="website" class="sr-only" tabindex="-1" autocomplete="off" aria-hidden="true">
-        <button class="btn btn-primary" type="submit">Get deals by email</button>
-      </form>
-    <?php endif; ?>
+<section class="hx-member" aria-labelledby="signup-title">
+  <div class="container">
+    <div class="hx-member-card on-dark">
+      <div class="hx-member-copy">
+        <span class="m-pill"><?= e($sec['signup_eyebrow']) ?></span>
+        <h2 id="signup-title"><?= e($sec['signup_title']) ?></h2>
+        <p><?= e($sec['signup_body']) ?></p>
+        <?php if (!$user): ?>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="<?= e(url('/register')) ?>"><?= e($sec['signup_cta']) ?> <?= icon('arrow-right', 'icon icon-sm') ?></a>
+            <a class="btn btn-outline-light" href="<?= e(url('/login')) ?>">Sign in</a>
+          </div>
+        <?php else: ?>
+          <form class="ft-news-row hx-member-form" method="post" action="<?= e(url('/newsletter')) ?>">
+            <?= csrf_field() ?>
+            <label class="sr-only" for="su-email">Email address</label>
+            <input class="input" id="su-email" type="email" name="email" required autocomplete="email" value="<?= e($user['email']) ?>">
+            <input type="text" name="website" class="sr-only" tabindex="-1" autocomplete="off" aria-hidden="true">
+            <button class="btn btn-primary" type="submit">Get deals by email</button>
+          </form>
+        <?php endif; ?>
+      </div>
+      <ul class="hx-perks" aria-label="Member benefits">
+        <li><span class="hx-perk-icon p1"><?= icon('heart') ?></span><span><strong>Save favourites</strong><small>Keep a wishlist on every device</small></span></li>
+        <li><span class="hx-perk-icon p2"><?= icon('box') ?></span><span><strong>Track every order</strong><small>Live status and tracking links</small></span></li>
+        <li><span class="hx-perk-icon p3"><?= icon('sparkle') ?></span><span><strong>First to new drops</strong><small>Early access to new collections</small></span></li>
+        <li><span class="hx-perk-icon p4"><?= icon('tag') ?></span><span><strong>Members-only offers</strong><small>Private sales by email</small></span></li>
+      </ul>
+    </div>
   </div>
 </section>
 <?php endif; ?>
