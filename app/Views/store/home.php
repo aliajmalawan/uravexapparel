@@ -21,6 +21,14 @@ foreach (array_merge($newArrivals, $bestSellers) as $p) {
 $collage = array_slice(array_values($collage), 0, 3);
 $prices = array_filter(array_map(static fn ($p) => (int) ($p['price'] ?? 0), array_merge($newArrivals, $bestSellers)));
 $fromPrice = $prices ? min($prices) : null;
+// Sale items shown on the promo band when it has no image of its own.
+$saleItems = [];
+foreach (array_merge($newArrivals, $bestSellers) as $p) {
+    if (!empty($p['on_sale']) && $p['image'] && !isset($saleItems[$p['id']])) {
+        $saleItems[$p['id']] = $p;
+    }
+}
+$saleItems = array_slice(array_values($saleItems), 0, 2);
 $freeOver = (int) (App\Services\Settings::get('shipping.free_threshold_minor', 0));
 // Scrolling highlights strip (assurance texts + store promises).
 $ticker = array_values(array_filter(array_merge(
@@ -146,14 +154,21 @@ $grid = static function (array $items, array $wishlistIds): string {
   <?php foreach ($promos as $promo): ?>
   <section class="hx-section" aria-label="<?= e($promo['title']) ?>">
     <div class="container">
-      <div class="hx-promo on-dark<?= $promo['image_path'] ? ' has-image' : '' ?>">
+      <div class="hx-promo on-dark<?= $promo['image_path'] || $saleItems ? ' has-image' : '' ?>">
         <div class="hx-promo-copy">
           <?php if ($promo['eyebrow']): ?><span class="eyebrow"><?= e($promo['eyebrow']) ?></span><?php endif; ?>
           <h2><?= e($promo['title']) ?></h2>
           <?php if ($promo['subtitle']): ?><p><?= e($promo['subtitle']) ?></p><?php endif; ?>
           <?php if ($promo['cta_label'] && $promo['cta_href']): ?><a class="btn btn-primary" href="<?= e(url($promo['cta_href'])) ?>"><?= e($promo['cta_label']) ?> <?= icon('arrow-right', 'icon icon-sm') ?></a><?php endif; ?>
         </div>
-        <?php if ($promo['image_path']): ?><img src="<?= e(media($promo['image_path'], 800)) ?>" alt="<?= e($promo['image_alt']) ?>" loading="lazy" width="800" height="600"><?php endif; ?>
+        <?php if ($promo['image_path']): ?><img src="<?= e(media($promo['image_path'], 800)) ?>" alt="<?= e($promo['image_alt']) ?>" loading="lazy" width="800" height="600">
+        <?php elseif ($saleItems): ?>
+          <div class="hx-promo-items">
+            <?php foreach ($saleItems as $i => $p): ?>
+              <a class="hx-promo-item hx-promo-item-<?= $i + 1 ?>" href="<?= e(url('/product/' . $p['slug'])) ?>"><img src="<?= e(media($p['image'], 400)) ?>" alt="" loading="lazy" width="400" height="533"><span><?= e($p['title']) ?><b><?= e(price((int) $p['price'])) ?> <s><?= e(price((int) $p['regular'])) ?></s></b></span></a>
+            <?php endforeach; ?>
+          </div>
+        <?php endif; ?>
       </div>
     </div>
   </section>

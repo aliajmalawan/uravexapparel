@@ -1006,3 +1006,24 @@ noscript .alert { margin: 0; }
 /* Section headings: gold underline accent */
 .hx-head h2 { position: relative; padding-bottom: 10px; }
 .hx-head h2::after { content: ""; position: absolute; left: 0; bottom: 0; width: 56px; height: 3px; border-radius: 3px; background: linear-gradient(90deg, var(--gold), var(--c-terracotta)); }
+/* v3 refinements: product art shown as framed photos on the colour cards */
+.hx-photo img, .hx-cat-media img { mix-blend-mode: normal; border-radius: 10px; box-shadow: 0 10px 24px rgba(0,0,0,.12); background: var(--ivory); }
+.hx-photo { padding: 9% 9% 20%; }
+.hx-cat-media { padding: 10%; }
+.hx-badge { left: -14px; bottom: auto; top: 22px; }
+@media (min-width: 1024px) { .hx-badge { left: -26px; top: 28px; bottom: auto; } }
+.hx-chip-ship { top: auto; bottom: 22%; left: -22px; }
+@media (max-width: 639px) { .hx-photo { padding: 10% 8% 34%; } .hx-photo img { border-radius: 6px; box-shadow: 0 6px 14px rgba(0,0,0,.12); } }
+/* Promo band: sale items as tilted cards */
+.hx-promo-items { position: relative; display: flex; justify-content: center; gap: var(--s-4); padding: var(--s-3) 0; }
+.hx-promo-item { position: relative; width: min(44%, 220px); background: var(--white); border-radius: 14px; padding: 10px 10px 12px; color: var(--ink); text-decoration: none; box-shadow: 0 20px 40px rgba(70,30,10,.28); transition: transform .35s var(--ease); }
+.hx-promo-item img { width: 100%; aspect-ratio: 3 / 4; object-fit: cover; border-radius: 9px; background: var(--ivory); }
+.hx-promo-item span { display: flex; flex-direction: column; gap: 2px; margin-top: 8px; font-size: 12px; font-weight: 600; }
+.hx-promo-item b { color: var(--c-terracotta); }
+.hx-promo-item s { color: var(--gray); font-weight: 400; margin-left: 4px; }
+.hx-promo-item-1 { transform: rotate(-5deg) translateY(6px); }
+.hx-promo-item-2 { transform: rotate(4deg) translateY(-6px); }
+@media (hover: hover) { .hx-promo-item:hover { transform: rotate(0) translateY(-8px); color: var(--ink); } }
+@media (max-width: 767px) { .hx-promo-items { margin-top: var(--s-2); } .hx-promo-item span { font-size: 11px; } }
+/* Categories fill the row on desktop */
+@media (min-width: 1024px) { .hx-cats { grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); } }
