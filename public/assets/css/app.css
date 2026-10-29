@@ -1101,3 +1101,40 @@ noscript .alert { margin: 0; }
 @media (max-width: 639px) { .ft-bottom .container { flex-direction: column; align-items: flex-start; } }
 .ft-logo .brand-word { display: inline-block !important; }
 .hx-member-copy h2, .hx-head h2, .hx-hero h1 { text-wrap: balance; }
+
+/* ───────── Responsive polish (audit fixes) ───────── */
+/* Never wider than the screen */
+.about-logo { max-width: min(360px, 100%); height: auto; }
+img, svg, video { max-width: 100%; }
+.admin-table td, .admin-table th { overflow-wrap: anywhere; }
+/* Comfortable tap targets on touch screens */
+.link-arrow { min-height: 36px; }
+@media (max-width: 767px) {
+  .site-footer li a, .ft-links a { display: flex; align-items: center; min-height: 40px; padding-block: 4px; }
+  .ft-contact-list a, .admin-main .card a:not(.btn), .kv a { display: inline-flex; align-items: center; min-height: 36px; }
+  .wallet-card a { display: inline-flex; align-items: center; min-height: 36px; }
+  .breadcrumbs a { display: inline-flex; align-items: center; min-height: 32px; }
+}
+/* Large desktops: a little more breathing room */
+@media (min-width: 1600px) { :root { --container: 1440px; } }
+@media (max-width: 767px) { .assurances.single a, .contact-list a, .assurances a { display: inline-flex; align-items: center; min-height: 40px; overflow-wrap: anywhere; } }
+/* Stacked tables on phones: labels stay on one line; values wrap */
+@media (max-width: 767px) {
+  .admin-table.stack-sm td::before { flex: none; white-space: nowrap; overflow-wrap: normal; margin-right: var(--s-3); }
+  .admin-table.stack-sm td > * { min-width: 0; }
+  .seller-panel .account-nav > .eyebrow { display: none; }
+}
+@media (max-width: 767px) {
+  .admin-main .admin-table.stack-sm td, .seller-panel .admin-table.stack-sm td { display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: var(--s-3); justify-items: end; text-align: right; }
+  .admin-main .admin-table.stack-sm td::before, .seller-panel .admin-table.stack-sm td::before { grid-column: 1; grid-row: 1 / span 12; align-self: start; justify-self: start; }
+  .admin-main .admin-table.stack-sm td > *, .seller-panel .admin-table.stack-sm td > * { grid-column: 2; }
+  .admin-main .admin-table.stack-sm td > br, .seller-panel .admin-table.stack-sm td > br { display: none; }
+}
+@media (max-width: 767px) {
+  .admin-main .admin-table.stack-sm td, .seller-panel .admin-table.stack-sm td { display: block; text-align: left; padding: 6px var(--s-3); }
+  .admin-main .admin-table.stack-sm td::before, .seller-panel .admin-table.stack-sm td::before { display: block; margin: 0 0 2px; grid-row: auto; }
+  .admin-main .admin-table.stack-sm td > br, .seller-panel .admin-table.stack-sm td > br { display: initial; }
+  .admin-main .admin-table.stack-sm td.num, .seller-panel .admin-table.stack-sm td.num { text-align: left; }
+  .admin-main .admin-table.stack-sm tr, .seller-panel .admin-table.stack-sm tr { padding: var(--s-3) 0; }
+}
+@media (max-width: 767px) { .admin-main .admin-table.stack-sm td img, .seller-panel .admin-table.stack-sm td img { display: block; margin: 4px 0 0; } }
