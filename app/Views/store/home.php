@@ -1,6 +1,6 @@
 <?php
 /**
- * Homepage (corporate-catalogue layout): slanted photo hero → promises →
+ * Homepage (corporate-catalogue layout): hero (copy + product collage) → promises →
  * about us → store figures → categories → new arrivals → collections band →
  * featured offer → best sellers → shipping band → sell on URAVEX → membership.
  * Texts, banners and section switches: Admin → Content → Homepage.
@@ -39,22 +39,44 @@ $grid = static function (array $items, array $wishlistIds): string {
     return $out . '</ul>';
 };
 ?>
-<?php /* ── Hero: full-width, slanted bottom edge ── */ ?>
-<section class="px-hero" aria-labelledby="hero-title">
-  <?php if ($hero && $hero['image_path']): ?><img class="px-hero-bg" src="<?= e(media($hero['image_path'], 1600)) ?>" srcset="<?= e(media_srcset($hero['image_path'])) ?>" sizes="100vw" alt="" fetchpriority="high" width="1600" height="900"><?php endif; ?>
-  <div class="container px-hero-inner">
-    <?php if ($heroPhoto): ?>
-      <figure class="px-hex" aria-hidden="true"><img src="<?= e(media($heroPhoto['image'], 800)) ?>" alt="" width="600" height="800" fetchpriority="high"></figure>
-    <?php endif; ?>
-    <div class="px-hero-copy">
-      <span class="px-eyebrow"><?= e($hero['eyebrow'] ?? $sec['hero_eyebrow']) ?></span>
-      <h1 id="hero-title"><?= e($hero['title'] ?? $sec['hero_title']) ?></h1>
-      <p><?= e($hero['subtitle'] ?? $sec['hero_subtitle']) ?></p>
-      <div class="px-actions">
-        <a class="btn px-btn-white" href="<?= e(url($hero['cta_href'] ?? '/shop')) ?>"><?= e($hero['cta_label'] ?? 'Shop now') ?></a>
-        <?php if (!$hero || $hero['secondary_cta_label']): ?><a class="btn px-btn-ghost" href="<?= e(url($hero['secondary_cta_href'] ?? '/new-arrivals')) ?>"><?= e($hero['secondary_cta_label'] ?? 'New arrivals') ?></a><?php endif; ?>
+<?php /* ── Hero: copy + trust points on the left, product collage on the right ── */
+$heroCards = array_slice($photos, 1, 2);
+$heroTitle = (string) ($hero['title'] ?? $sec['hero_title']);
+?>
+<section class="hx2" aria-labelledby="hero-title">
+  <?php if ($hero && $hero['image_path']): ?><img class="hx2-bg" src="<?= e(media($hero['image_path'], 1600)) ?>" srcset="<?= e(media_srcset($hero['image_path'])) ?>" sizes="100vw" alt="" fetchpriority="high" width="1600" height="900"><?php endif; ?>
+  <div class="container hx2-inner">
+    <div class="hx2-copy">
+      <span class="hx2-pill"><i aria-hidden="true"></i><?= e($hero['eyebrow'] ?? $sec['hero_eyebrow']) ?></span>
+      <h1 id="hero-title"><?= e($heroTitle) ?></h1>
+      <p class="hx2-lead"><?= e($hero['subtitle'] ?? $sec['hero_subtitle']) ?></p>
+      <div class="hx2-actions">
+        <a class="btn hx2-btn-gold" href="<?= e(url($hero['cta_href'] ?? '/shop')) ?>"><?= e($hero['cta_label'] ?? 'Shop now') ?><?= icon('arrow-right', 'icon icon-sm') ?></a>
+        <?php if (!$hero || $hero['secondary_cta_label']): ?><a class="btn hx2-btn-line" href="<?= e(url($hero['secondary_cta_href'] ?? '/new-arrivals')) ?>"><?= e($hero['secondary_cta_label'] ?? 'New arrivals') ?></a><?php endif; ?>
       </div>
+      <ul class="hx2-trust" aria-label="Why shop with URAVEX">
+        <li><?= icon('truck', 'icon icon-sm') ?><span><strong>US-wide delivery</strong><?= $freeOver > 0 ? 'Free over ' . e(money($freeOver)) : 'Tracked to every state' ?></span></li>
+        <li><?= icon('shield', 'icon icon-sm') ?><span><strong>Secure crypto pay</strong>USDT · BTC · ETH</span></li>
+        <li><?= icon('refresh', 'icon icon-sm') ?><span><strong>Easy exchanges</strong>Hassle-free returns</span></li>
+      </ul>
     </div>
+
+    <?php if ($heroPhoto): ?>
+    <div class="hx2-visual">
+      <div class="hx2-ring" aria-hidden="true"></div>
+      <a class="hx2-main" href="<?= e(url('/product/' . $heroPhoto['slug'])) ?>" aria-label="<?= e($heroPhoto['title']) ?>">
+        <img src="<?= e(media($heroPhoto['image'], 800)) ?>" alt="<?= e($heroPhoto['image_alt'] ?: $heroPhoto['title']) ?>" width="600" height="760" fetchpriority="high">
+        <span class="hx2-main-tag"><span><?= e($heroPhoto['category_name'] ?? 'Featured') ?></span><strong><?= e($heroPhoto['title']) ?></strong><em><?= e(price($heroPhoto['price'])) ?></em></span>
+      </a>
+      <?php foreach ($heroCards as $i => $c): ?>
+        <a class="hx2-float hx2-float-<?= $i + 1 ?>" href="<?= e(url('/product/' . $c['slug'])) ?>">
+          <img src="<?= e(media($c['image'], 400)) ?>" alt="" width="64" height="64" loading="lazy">
+          <span><strong><?= e($c['title']) ?></strong><em><?= e(price($c['price'])) ?><?php if (!empty($c['on_sale'])): ?> <s><?= e(price($c['regular'])) ?></s><?php endif; ?></em></span>
+        </a>
+      <?php endforeach; ?>
+      <div class="hx2-badge" aria-hidden="true"><strong><?= (int) $stats['products'] ?>+</strong><span>styles</span></div>
+    </div>
+    <?php endif; ?>
   </div>
 </section>
 
