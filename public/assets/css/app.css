@@ -68,6 +68,8 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 img, svg, video { display: block; max-width: 100%; height: auto; }
+/* The hidden attribute always wins over display rules (gallery slides, panels toggled by JS). */
+[hidden] { display: none !important; }
 a { color: inherit; text-decoration-thickness: 1px; text-underline-offset: 3px; }
 a:hover { color: var(--gold-dark); }
 button, input, select, textarea { font: inherit; color: inherit; }
