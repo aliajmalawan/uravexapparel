@@ -35,13 +35,13 @@ $meta = $meta ?? ['full_title' => 'URAVEX Apparel', 'description' => '', 'noinde
 <link rel="manifest" href="<?= e(path_url('site.webmanifest')) ?>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Montserrat:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Roboto:wght@300;400;500;700&display=swap">
 <link rel="stylesheet" href="<?= e(asset('assets/css/app.css')) ?>">
 <?php foreach ($meta['jsonld'] as $ld): ?>
 <script type="application/ld+json"><?= json_encode($ld, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP) ?></script>
 <?php endforeach; ?>
 </head>
-<body>
+<body class="theme-<?= e(store_theme()) ?>">
 <span id="top" tabindex="-1"></span>
 <a class="skip-link" href="#main">Skip to content</a>
 <?php if (!empty($announcement['enabled']) && trim((string) ($announcement['text'] ?? '')) !== ''): ?>
@@ -58,10 +58,39 @@ $meta = $meta ?? ['full_title' => 'URAVEX Apparel', 'description' => '', 'noinde
         <?php if (!empty($settings['branding']['show_wordmark'])): ?><span class="brand-word">URAVEX<small>APPAREL</small></span><?php endif; ?>
       </a>
     </div>
+    <?php
+      $menuCats = array_values(array_filter(App\Services\Catalog::categories(), static fn ($c) => (int) $c['product_count'] > 0));
+      // The category dropdown hangs off the "Shop" link; if the menu has none, it is added after the first link.
+      $menuNav = $nav;
+      if ($menuCats && !isset($menuNav['/shop'])) {
+          $menuNav = array_slice($nav, 0, 1, true) + ['/shop' => 'Shop'] + array_slice($nav, 1, null, true);
+      }
+    ?>
     <nav class="main-nav" aria-label="Main">
       <ul>
-        <?php foreach ($nav as $href => $label): ?>
-          <li><a href="<?= e(url($href)) ?>"<?= is_active_path($href) ? ' aria-current="page"' : '' ?>><?= e($label) ?></a></li>
+        <?php foreach ($menuNav as $href => $label): $active = is_active_path($href) || ($href === '/shop' && str_starts_with((string) ($currentPath ?? ''), '/category/')); ?>
+          <?php if ($href === '/shop' && $menuCats): ?>
+          <li class="nav-drop">
+            <a href="<?= e(url($href)) ?>" aria-haspopup="true"<?= $active ? ' aria-current="page"' : '' ?>><?= e($label) ?><?= icon('chevron-down', 'icon icon-sm nav-caret') ?></a>
+            <div class="nav-mega">
+              <div class="nav-mega-inner">
+                <ul class="nav-mega-cats">
+                  <?php foreach ($menuCats as $c): ?>
+                    <li><a href="<?= e(url('/category/' . $c['slug'])) ?>"<?= ($currentPath ?? '') === '/category/' . $c['slug'] ? ' aria-current="page"' : '' ?>><span class="nav-mega-icon"><?= icon($c['icon'] ?: 'hanger') ?></span><span><strong><?= e($c['name']) ?></strong><small><?= (int) $c['product_count'] ?> products</small></span></a></li>
+                  <?php endforeach; ?>
+                </ul>
+                <ul class="nav-mega-quick">
+                  <li><a href="<?= e(url('/new-arrivals')) ?>"><?= icon('sparkle', 'icon icon-sm') ?>New in</a></li>
+                  <li><a href="<?= e(url('/sale')) ?>"><?= icon('tag', 'icon icon-sm') ?>Sale</a></li>
+                  <li><a href="<?= e(url('/collections')) ?>"><?= icon('dots', 'icon icon-sm') ?>All collections</a></li>
+                  <li><a class="nav-mega-all" href="<?= e(url('/shop')) ?>">Shop everything <?= icon('chevron-right', 'icon icon-sm') ?></a></li>
+                </ul>
+              </div>
+            </div>
+          </li>
+          <?php else: ?>
+          <li><a href="<?= e(url($href)) ?>"<?= $active ? ' aria-current="page"' : '' ?>><?= e($label) ?></a></li>
+          <?php endif; ?>
         <?php endforeach; ?>
       </ul>
     </nav>
@@ -90,22 +119,6 @@ $meta = $meta ?? ['full_title' => 'URAVEX Apparel', 'description' => '', 'noinde
   </div>
 </header>
 
-<?php if (!empty($settings['sections']['show_category_rail'])): $railCats = array_values(array_filter(App\Services\Catalog::categories(), static fn ($c) => (int) $c['product_count'] > 0)); ?>
-<?php if ($railCats): ?>
-<nav class="cat-rail" aria-label="Shop by category">
-  <div class="container">
-    <ul>
-      <?php foreach ($railCats as $c): $here = ($currentPath ?? '') === '/category/' . $c['slug']; ?>
-        <li><a href="<?= e(url('/category/' . $c['slug'])) ?>"<?= $here ? ' aria-current="page"' : '' ?>><?= icon($c['icon'] ?: 'hanger') ?><span><?= e($c['name']) ?></span></a></li>
-      <?php endforeach; ?>
-      <li><a href="<?= e(url('/new-arrivals')) ?>"><?= icon('sparkle') ?><span>New in</span></a></li>
-      <li><a href="<?= e(url('/sale')) ?>"><?= icon('tag') ?><span>Sale</span></a></li>
-      <li><a href="<?= e(url('/collections')) ?>"><?= icon('dots') ?><span>View all</span></a></li>
-    </ul>
-  </div>
-</nav>
-<?php endif; endif; ?>
-
 <div class="drawer" id="mobile-menu" role="dialog" aria-modal="true" aria-label="Menu">
   <div class="drawer-backdrop" data-drawer-close></div>
   <div class="drawer-panel on-dark">
@@ -119,6 +132,16 @@ $meta = $meta ?? ['full_title' => 'URAVEX Apparel', 'description' => '', 'noinde
           <li><a href="<?= e(url($href)) ?>"<?= is_active_path($href) ? ' aria-current="page"' : '' ?>><?= e($label) ?><?= icon('chevron-right', 'icon icon-sm') ?></a></li>
         <?php endforeach; ?>
         <li><a href="<?= e(url('/sale')) ?>">Sale<?= icon('chevron-right', 'icon icon-sm') ?></a></li>
+      </ul>
+      <?php if ($menuCats): ?>
+      <p class="mobile-nav-title">Shop by category</p>
+      <ul class="mobile-cats">
+        <?php foreach ($menuCats as $c): ?>
+          <li><a href="<?= e(url('/category/' . $c['slug'])) ?>"><?= icon($c['icon'] ?: 'hanger') ?><span><?= e($c['name']) ?></span></a></li>
+        <?php endforeach; ?>
+      </ul>
+      <?php endif; ?>
+      <ul class="mobile-nav">
         <li><a href="<?= e(url('/account/wishlist')) ?>">Wishlist<?= icon('heart', 'icon icon-sm') ?></a></li>
         <li><a href="<?= e(url($user ? '/account' : '/login')) ?>"><?= $user ? 'My account' : 'Sign in / Register' ?><?= icon('user', 'icon icon-sm') ?></a></li>
         <li><a href="<?= e(url('/track-order')) ?>">Track order<?= icon('truck', 'icon icon-sm') ?></a></li>

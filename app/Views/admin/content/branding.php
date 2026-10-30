@@ -19,5 +19,19 @@
       <p class="hint">The browser-tab icon (favicon) and email header use the original brand files.</p>
     </section>
   </div>
+  <section class="card">
+    <h2>Store colour theme</h2>
+    <p class="hint mt-2">Every theme is built around the gold of the URAVEX logo. Use “Preview” to open the store in that theme in a new tab (nothing is saved), then choose one and press Save.</p>
+    <div class="theme-picker mt-4">
+      <?php $current = (string) ($b['theme'] ?? 'logo'); foreach (STORE_THEMES as $key => $label): ?>
+        <label class="theme-option">
+          <input type="radio" name="theme" value="<?= e($key) ?>"<?= $current === $key ? ' checked' : '' ?>>
+          <span class="theme-swatch sw-<?= e($key) ?>" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+          <strong><?= e($label) ?></strong>
+          <a class="small" href="<?= e(url('/', ['theme' => $key])) ?>" target="_blank" rel="noopener">Preview ↗</a>
+        </label>
+      <?php endforeach; ?>
+    </div>
+  </section>
   <div class="sticky-actions"><button class="btn btn-primary" type="submit">Save branding</button></div>
 </form>

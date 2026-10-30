@@ -185,6 +185,18 @@ final class Catalog
         return self::hydrateCards($rows);
     }
 
+    /** Real store figures for the homepage stats strip (visible catalogue only). */
+    public static function stats(): array
+    {
+        $db = Database::get();
+        return [
+            'products' => (int) $db->value('SELECT COUNT(*) FROM products p WHERE ' . self::VISIBLE),
+            'categories' => count(self::categories()),
+            'colours' => (int) $db->value("SELECT COUNT(DISTINCT v.color) FROM product_variants v JOIN products p ON p.id = v.product_id WHERE v.is_active = 1 AND v.color <> '' AND " . self::VISIBLE),
+            'sizes' => (int) $db->value("SELECT COUNT(DISTINCT v.size) FROM product_variants v JOIN products p ON p.id = v.product_id WHERE v.is_active = 1 AND v.size <> '' AND " . self::VISIBLE),
+        ];
+    }
+
     public static function newArrivals(int $limit = 8): array
     {
         return self::hydrateCards(Database::get()->all(

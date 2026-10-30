@@ -13,7 +13,7 @@ $cb = static fn (string $k, string $label) => '<label class="check"><input type=
     <div><h3 class="small">Best sellers</h3><?= $cb('show_bestsellers', 'Show section') ?><?= $tf('bestsellers_eyebrow', 'Eyebrow', 80) ?><?= $tf('bestsellers_title', 'Heading', 120) ?>
       <div class="field"><label for="s-bestsellers_count">Products shown</label><input class="input" id="s-bestsellers_count" name="bestsellers_count" type="number" min="1" max="24" value="<?= (int) ($sec['bestsellers_count'] ?? 8) ?>"></div></div>
     <div><h3 class="small">Featured collections</h3><?= $cb('show_collections', 'Show section') ?><?= $tf('collections_eyebrow', 'Eyebrow', 80) ?><?= $tf('collections_title', 'Heading', 120) ?></div>
-    <div><h3 class="small">Layout blocks</h3><?= $cb('show_category_rail', 'Category icon bar (under the header)') ?><?= $cb('show_discover', 'Discover tiles (collections & categories)') ?><?= $cb('show_rails', 'Product rows per category') ?>
+    <div><h3 class="small">Layout blocks</h3><?= $cb('show_discover', 'Discover tiles (collections & categories)') ?><?= $cb('show_rails', 'Product rows per category') ?>
       <div class="field"><label for="s-rails_count">Number of category rows</label><input class="input" id="s-rails_count" name="rails_count" type="number" min="1" max="8" value="<?= (int) ($sec['rails_count'] ?? 3) ?>"></div>
       <?= $cb('show_promos', 'Promo bands (from Banners)') ?><?= $cb('show_story', 'Brand story') ?><?= $cb('show_assurances', 'Assurance strip') ?><?= $cb('show_newsletter', 'Newsletter block') ?></div>
     <div><h3 class="small">Sign-up banner</h3><?= $cb('show_signup', 'Show sign-up banner') ?><?= $tf('signup_eyebrow', 'Small label', 60) ?><?= $tf('signup_title', 'Heading', 120) ?>
@@ -35,6 +35,12 @@ $cb = static fn (string $k, string $label) => '<label class="check"><input type=
       <div class="field"><label for="story_cta_href">Button link</label><input class="input" id="story_cta_href" name="story_cta_href" value="<?= e($home['story_cta_href'] ?? '') ?>"<?= error_attrs('story_cta_href') ?>><?= error_text('story_cta_href') ?></div>
     </div>
     <div class="field"><label for="story_image">Story image</label><?php if (!empty($home['story_image'])): ?><img class="thumb" src="<?= e(media($home['story_image'], 400)) ?>" alt="" width="80" height="100"><?php endif; ?><input class="input" id="story_image" name="story_image" type="file" accept="image/jpeg,image/png,image/webp"></div>
+    <div class="form-row c2">
+      <div class="field"><label for="vision_title">About card 1 — title</label><input class="input" id="vision_title" name="vision_title" maxlength="80" value="<?= e($home['vision_title'] ?? '') ?>"></div>
+      <div class="field"><label for="history_title">About card 2 — title</label><input class="input" id="history_title" name="history_title" maxlength="80" value="<?= e($home['history_title'] ?? '') ?>"></div>
+      <div class="field"><label for="vision_body">About card 1 — text</label><textarea class="textarea" id="vision_body" name="vision_body" rows="3" maxlength="600"><?= e($home['vision_body'] ?? '') ?></textarea></div>
+      <div class="field"><label for="history_body">About card 2 — text</label><textarea class="textarea" id="history_body" name="history_body" rows="3" maxlength="600"><?= e($home['history_body'] ?? '') ?></textarea></div>
+    </div>
     <div class="form-row c2">
       <div class="field"><label for="newsletter_title">Newsletter heading</label><input class="input" id="newsletter_title" name="newsletter_title" value="<?= e($home['newsletter_title'] ?? '') ?>"></div>
       <div class="field"><label for="newsletter_body">Newsletter text</label><input class="input" id="newsletter_body" name="newsletter_body" value="<?= e($home['newsletter_body'] ?? '') ?>"></div>

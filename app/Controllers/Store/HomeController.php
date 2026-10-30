@@ -28,6 +28,7 @@ final class HomeController extends Controller
             'tiles' => !empty($sec['show_discover']) ? Catalog::discoverTiles(7) : [],
             'rails' => !empty($sec['show_rails']) ? Catalog::categoryRails(max(1, (int) ($sec['rails_count'] ?? 3))) : [],
             'home' => Settings::get('home'),
+            'stats' => Catalog::stats(),
             'wishlistIds' => Wishlist::ids(),
         ], [
             'canonical' => url('/'),

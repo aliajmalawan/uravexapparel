@@ -31,7 +31,7 @@ final class AuditController extends AdminController
         $pg = $this->page($r->query, 50);
         $sql = ' FROM admin_audit_logs l WHERE ' . implode(' AND ', $where);
         $total = (int) $db->value('SELECT COUNT(*)' . $sql, $params);
-        $rows = $db->all('SELECT l.*' . $sql . ' ORDER BY l.id DESC LIMIT ' . $pg['per'] . ' OFFSET ' . $pg['offset'], $params);
+        $rows = $db->all('SELECT l.*, (l.entity_type = \'order\' AND EXISTS (SELECT 1 FROM orders o WHERE o.id = l.entity_id)) AS order_exists' . $sql . ' ORDER BY l.id DESC LIMIT ' . $pg['per'] . ' OFFSET ' . $pg['offset'], $params);
         return $this->admin('audit/index', [
             'rows' => $rows, 'page' => $pg['page'], 'pages' => max(1, (int) ceil($total / $pg['per'])),
             'query' => array_intersect_key($r->query, ['action' => 1, 'entity' => 1, 'entity_id' => 1]),

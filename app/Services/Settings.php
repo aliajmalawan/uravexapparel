@@ -43,6 +43,10 @@ final class Settings
             'story_image' => '',
             'story_cta_label' => 'Our story',
             'story_cta_href' => '/about',
+            'vision_title' => 'Our Vision',
+            'vision_body' => 'To make well-made, honest clothing easy to buy — premium fabrics, precise tailoring and fair prices, delivered to your door anywhere in the United States.',
+            'history_title' => 'Our Story',
+            'history_body' => 'URAVEX began as a clothing manufacturer and exporter producing for international labels. Today we bring that same factory craftsmanship directly to customers through our own store.',
             'newsletter_title' => 'Join the URAVEX list',
             'newsletter_body' => 'New drops, private sales and styling notes. No spam — unsubscribe anytime.',
             'assurances' => [
@@ -109,6 +113,7 @@ final class Settings
             'emblem' => '',
             'logo' => '',
             'show_wordmark' => true,
+            'theme' => 'logo',  // storefront colours: logo | navy | onyx | ivory | emerald
         ],
         'payments' => [
             'cod' => ['enabled' => true, 'max_order_minor' => 0, 'fee_minor' => 0, 'note' => 'Pay in cash when your order arrives.'],

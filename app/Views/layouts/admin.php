@@ -33,7 +33,7 @@ $u = Auth::user();
 <meta name="csrf-token" content="<?= e(csrf_token()) ?>">
 <title><?= e($title) ?> · URAVEX Admin</title>
 <link rel="icon" href="<?= e(path_url('favicon.ico')) ?>" sizes="any">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=Montserrat:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Roboto:wght@300;400;500;700&display=swap">
 <link rel="stylesheet" href="<?= e(asset('assets/css/app.css')) ?>">
 <link rel="stylesheet" href="<?= e(asset('assets/css/admin.css')) ?>">
 </head>

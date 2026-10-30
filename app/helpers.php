@@ -235,3 +235,23 @@ function brand_logo(): string
     $custom = (string) App\Services\Settings::get('branding.logo', '');
     return $custom !== '' ? media($custom, 800) : asset('brand/uravex-logo-600.webp');
 }
+
+/** Storefront colour themes (Admin → Content → Branding). */
+const STORE_THEMES = [
+    'logo' => 'Black, Gold & Silver (logo colours)',
+    'navy' => 'Navy & Gold',
+    'onyx' => 'Onyx & Gold',
+    'ivory' => 'Ivory & Gold',
+    'emerald' => 'Emerald & Gold',
+];
+
+/** Active theme: ?theme=… previews one page without saving; otherwise the saved choice. */
+function store_theme(): string
+{
+    $preview = (string) ($_GET['theme'] ?? '');
+    if (isset(STORE_THEMES[$preview])) {
+        return $preview;
+    }
+    $saved = (string) App\Services\Settings::get('branding.theme', 'logo');
+    return isset(STORE_THEMES[$saved]) ? $saved : 'logo';
+}

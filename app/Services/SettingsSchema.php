@@ -25,6 +25,7 @@ final class SettingsSchema
         'home' => [
             'story_eyebrow' => 'string|max:80', 'story_title' => 'string|max:160', 'story_body' => 'string|max:2000',
             'story_cta_label' => 'string|max:60', 'story_cta_href' => 'link|max:255',
+            'vision_title' => 'string|max:80', 'vision_body' => 'string|max:600', 'history_title' => 'string|max:80', 'history_body' => 'string|max:600',
             'newsletter_title' => 'string|max:120', 'newsletter_body' => 'string|max:300',
         ],
         'navigation' => ['footer_pages_title' => 'string|max:60'],
@@ -38,7 +39,7 @@ final class SettingsSchema
             'show_signup' => 'bool', 'signup_eyebrow' => 'string|max:60', 'signup_title' => 'string|max:120', 'signup_body' => 'string|max:400', 'signup_cta' => 'string|max:40',
             'help_title' => 'string|max:60', 'help_body' => 'string|max:200',
         ],
-        'branding' => ['show_wordmark' => 'bool'],
+        'branding' => ['show_wordmark' => 'bool', 'theme' => 'string|in:logo,navy,onyx,ivory,emerald'],
         'checkout' => ['guest_checkout' => 'bool', 'tax_percent' => 'int|min:0|max:50', 'reservation_minutes' => 'required|int|min:5|max:1440', 'require_phone' => 'bool'],
         'shipping' => ['free_threshold' => 'money'],
         'payments_cod' => ['enabled' => 'bool', 'max_order' => 'money', 'note' => 'string|max:200'],

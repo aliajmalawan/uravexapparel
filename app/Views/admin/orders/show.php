@@ -77,7 +77,7 @@ $canRefund = Auth::can('orders.refund') && in_array($o['payment_status'], ['paid
     <section class="card">
       <h2>Items</h2>
       <div class="table-scroll mt-2">
-        <table class="admin-table">
+        <table class="admin-table order-items-table">
           <thead><tr><th scope="col">Item</th><th scope="col" class="num">Unit</th><th scope="col" class="num">Qty</th><th scope="col" class="num">Discount</th><th scope="col" class="num">Total</th></tr></thead>
           <tbody>
             <?php foreach ($o['items'] as $it): ?>

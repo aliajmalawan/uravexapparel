@@ -14,7 +14,7 @@
       <td data-label="When"><?= e(dt($l['created_at'])) ?><br><span class="xsmall muted"><?= e((string) $l['ip_address']) ?></span></td>
       <td data-label="Who"><?= e((string) $l['actor_email']) ?></td>
       <td data-label="Action"><code><?= e($l['action']) ?></code></td>
-      <td data-label="Entity"><?= e($l['entity_type']) ?><?= $l['entity_id'] ? ' #' . e($l['entity_id']) : '' ?><?php if ($l['entity_type'] === 'order' && $l['entity_id']): ?> <a class="xsmall" href="<?= e(url('/admin/orders/' . $l['entity_id'])) ?>">open</a><?php endif; ?></td>
+      <td data-label="Entity"><?= e($l['entity_type']) ?><?= $l['entity_id'] ? ' #' . e($l['entity_id']) : '' ?><?php if ($l['entity_type'] === 'order' && $l['entity_id']): ?><?php if (!empty($l['order_exists'])): ?> <a class="xsmall" href="<?= e(url('/admin/orders/' . $l['entity_id'])) ?>">open</a><?php else: ?> <span class="xsmall muted">(deleted)</span><?php endif; ?><?php endif; ?></td>
       <td data-label="Change"><?php if ($l['before_data'] || $l['after_data']): ?><pre class="json-diff"><?= $l['before_data'] ? 'before: ' . e($l['before_data']) . "\n" : '' ?><?= $l['after_data'] ? 'after:  ' . e($l['after_data']) : '' ?></pre><?php endif; ?></td>
     </tr>
   <?php endforeach; ?>
