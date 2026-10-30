@@ -601,3 +601,16 @@ Cart::add($house['variant_id'], 1);
 $db->exec('INSERT INTO cart_items (cart_id, variant_id, quantity) SELECT cart_id, ?, 1 FROM cart_items ORDER BY id DESC LIMIT 1', [$sp['variant_id']]);
 T::throws(ValidationException::class, fn () => Fx::checkout($rate, 'cod'), 'cannot buy from a suspended seller');
 T::throws(ValidationException::class, fn () => App\Services\Marketplace::requestWithdrawal($sid, 100, $uid), 'suspended sellers cannot withdraw');
+
+T::$current = 'Checkout with several items';
+reset_db();
+$rate = Fx::shipping();
+$older = Fx::product(100000, null, 5);
+$newer = Fx::product(150000, null, 5);
+Fx::newGuest();
+// Added newest variant first: the bag lists items in the order added, checkout locks them by variant id.
+Cart::add($newer['variant_id'], 1);
+Cart::add($older['variant_id'], 2);
+$r = Fx::checkout($rate, 'cod');
+T::ok(!empty($r['order']['id']), 'order with items added out of id order places without a "total changed" error');
+T::eq(2, (int) $db->value('SELECT COUNT(*) FROM order_items WHERE order_id = ?', [$r['order']['id']]), 'both items on the order');

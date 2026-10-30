@@ -313,13 +313,16 @@
       checkout.submit();
     };
     $$('[data-refresh-on-change]', checkout).forEach((el) => {
-      el.addEventListener('change', () => { clearTimeout(timer); timer = setTimeout(refreshNow, 250); });
+      el.addEventListener('change', () => { clearTimeout(timer); timer = setTimeout(() => { timer = null; refreshNow(); }, 250); });
     });
     if (refreshBtn) refreshBtn.closest('p').hidden = true;
     let submitting = false;
     checkout.addEventListener('submit', (e) => {
       const submitter = e.submitter;
       if (submitter && submitter.value !== 'place') return;
+      // State or delivery just changed and the totals haven't refreshed yet: refresh first, so the
+      // customer confirms the new total instead of hitting "Your order total was updated".
+      if (timer) { e.preventDefault(); clearTimeout(timer); timer = null; refreshNow(); return; }
       if (submitting) { e.preventDefault(); return; }
       submitting = true;
       const btn = $('[data-place-order]', checkout);

@@ -111,10 +111,13 @@ final class Pricing
     /** Fingerprint of what the customer was shown, to detect changes at submit. */
     public static function fingerprint(array $totals, array $lines): string
     {
-        $parts = [$totals['subtotal'], $totals['discount'], $totals['shipping'], $totals['tax'], $totals['total']];
+        $items = [];
         foreach ($lines as $l) {
-            $parts[] = $l['key'] . ':' . $l['unit'] . 'x' . $l['qty'];
+            $items[] = $l['key'] . ':' . $l['unit'] . 'x' . $l['qty'];
         }
+        // Order-independent: the bag lists items as added, checkout reads them by variant id.
+        sort($items, SORT_STRING);
+        $parts = array_merge([$totals['subtotal'], $totals['discount'], $totals['shipping'], $totals['tax'], $totals['total']], $items);
         return hash('sha256', implode('|', $parts));
     }
 }
