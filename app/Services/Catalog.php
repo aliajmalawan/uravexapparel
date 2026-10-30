@@ -293,7 +293,7 @@ final class Catalog
                  WHERE pc.collection_id = ? AND pi.position = 0 AND ' . self::VISIBLE . ' ORDER BY p.published_at DESC LIMIT 1',
                 [$c['id']]
             );
-            $tiles[] = ['title' => $c['name'], 'subtitle' => str_limit((string) $c['description'], 60), 'href' => '/collections/' . $c['slug'], 'image' => $img ?: null];
+            $tiles[] = ['title' => $c['name'], 'subtitle' => str_limit((string) $c['description'], 60), 'href' => '/collections/' . $c['slug'], 'image' => $img ?: null, 'count' => (int) $c['product_count']];
         }
         foreach (self::categories() as $c) {
             if ((int) $c['product_count'] === 0) {
@@ -303,7 +303,7 @@ final class Catalog
                 'SELECT pi.path FROM product_images pi JOIN products p ON p.id = pi.product_id WHERE p.category_id = ? AND pi.position = 0 AND ' . self::VISIBLE . ' ORDER BY p.featured DESC, p.published_at DESC LIMIT 1',
                 [$c['id']]
             );
-            $tiles[] = ['title' => $c['name'], 'subtitle' => str_limit((string) $c['description'], 60), 'href' => '/category/' . $c['slug'], 'image' => $img ?: null];
+            $tiles[] = ['title' => $c['name'], 'subtitle' => str_limit((string) $c['description'], 60), 'href' => '/category/' . $c['slug'], 'image' => $img ?: null, 'count' => (int) $c['product_count']];
         }
         return array_slice($tiles, 0, $limit);
     }

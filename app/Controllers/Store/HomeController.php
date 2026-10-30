@@ -25,7 +25,7 @@ final class HomeController extends Controller
             'collections' => !empty($sec['show_collections']) ? Catalog::collections(true) : [],
             'promos' => !empty($sec['show_promos']) ? Content::banners('promo', 2) : [],
             'sec' => $sec,
-            'tiles' => !empty($sec['show_discover']) ? Catalog::discoverTiles(7) : [],
+            'tiles' => !empty($sec['show_discover']) ? Catalog::discoverTiles(16) : [],
             'rails' => !empty($sec['show_rails']) ? Catalog::categoryRails(max(1, (int) ($sec['rails_count'] ?? 3))) : [],
             'home' => Settings::get('home'),
             'stats' => Catalog::stats(),

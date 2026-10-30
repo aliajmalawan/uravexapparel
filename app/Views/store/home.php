@@ -80,56 +80,34 @@ $heroTitle = (string) ($hero['title'] ?? $sec['hero_title']);
   </div>
 </section>
 
-<?php /* ── Promises ── */ ?>
+<?php /* ── Promises: white bar overlapping the hero ── */ ?>
 <?php if ($assurances && !empty($sec['show_assurances'])): ?>
-<section class="px-section px-features" aria-label="Why shop with URAVEX">
-  <ul class="container">
-    <?php foreach ($assurances as $a): ?>
-      <li><span class="px-icon-tile"><?= icon($a['icon'] ?? 'check') ?></span><h3><?= e($a['title'] ?? '') ?></h3><p><?= e($a['text'] ?? '') ?></p></li>
-    <?php endforeach; ?>
-  </ul>
-</section>
-<?php endif; ?>
-
-<?php /* ── About us ── */ ?>
-<section class="px-section px-about" aria-labelledby="about-title">
-  <div class="container px-about-grid">
-    <div>
-      <?= $heading($home['story_eyebrow'] ?: 'About Us', $home['story_title'] ?: 'Made with intent. Built to last.', 'about-title', false) ?>
-      <p class="px-lead"><?= nl2br(e($home['story_body'] ?? '')) ?></p>
-      <div class="px-cards-2">
-        <div class="px-card px-card-dark"><span class="px-icon-tile is-light"><?= icon('eye') ?></span><h3><?= e($home['vision_title'] ?? 'Our Vision') ?></h3><p><?= e($home['vision_body'] ?? '') ?></p></div>
-        <div class="px-card px-card-light"><span class="px-icon-tile"><?= icon('history') ?></span><h3><?= e($home['history_title'] ?? 'Our Story') ?></h3><p><?= e($home['history_body'] ?? '') ?></p></div>
-      </div>
-      <?php if (!empty($home['story_cta_href'])): ?><a class="btn px-btn-dark mt-4" href="<?= e(url($home['story_cta_href'])) ?>"><?= e($home['story_cta_label'] ?? 'Read more') ?></a><?php endif; ?>
-    </div>
-    <div class="px-about-art" aria-hidden="true">
-      <div class="px-mosaic"><?php foreach ($mosaic as $p): ?><img src="<?= e(media($p['image'], 400)) ?>" alt="" width="200" height="266" loading="lazy"><?php endforeach; ?></div>
-      <div class="px-stat-float"><?= icon('tag') ?><strong><?= (int) $stats['products'] ?>+</strong><span>Styles in store</span></div>
-    </div>
-  </div>
-</section>
-
-<?php /* ── Store figures (real numbers from the catalogue) ── */ ?>
-<section class="px-section px-stats-wrap" aria-label="URAVEX in numbers">
+<section class="hp-promises" aria-label="Why shop with URAVEX">
   <div class="container">
-    <ul class="px-stats">
-      <li><?= icon('tag') ?><strong><?= (int) $stats['products'] ?>+</strong><span>Products</span></li>
-      <li><?= icon('grid') ?><strong><?= (int) $stats['categories'] ?></strong><span>Categories</span></li>
-      <li><?= icon('sparkle') ?><strong><?= (int) $stats['colours'] ?>+</strong><span>Colours</span></li>
-      <li><?= icon('truck') ?><strong>50</strong><span>States we ship to</span></li>
+    <ul class="hp-promise-bar">
+      <?php foreach ($assurances as $a): ?>
+        <li><span class="hp-ico"><?= icon($a['icon'] ?? 'check') ?></span><span><strong><?= e($a['title'] ?? '') ?></strong><small><?= e($a['text'] ?? '') ?></small></span></li>
+      <?php endforeach; ?>
     </ul>
   </div>
 </section>
+<?php endif; ?>
 
 <?php /* ── Categories ── */ ?>
 <?php if ($cats): ?>
-<section class="px-section" aria-labelledby="cats-title">
+<section class="hp-section" aria-labelledby="cats-title">
   <div class="container">
-    <?= $heading('Browse', 'Shop by Category', 'cats-title') ?>
-    <ul class="px-cats" tabindex="0" aria-label="Categories — scroll sideways on small screens">
+    <div class="hp-head">
+      <div><span class="hp-eyebrow">Browse</span><h2 id="cats-title">Shop by category</h2></div>
+      <a class="hp-link" href="<?= e(url('/shop')) ?>">View all products <?= icon('arrow-right', 'icon icon-sm') ?></a>
+    </div>
+    <ul class="hp-cats" tabindex="0" aria-label="Categories — scroll sideways on small screens">
       <?php foreach ($cats as $t): ?>
-        <li><a class="px-cat" href="<?= e(url($t['href'])) ?>"><span class="px-cat-media"><img src="<?= e(media($t['image'], 400)) ?>" alt="" loading="lazy" width="400" height="500"></span><span class="px-cat-name"><?= e($t['title']) ?></span><span class="px-more">Shop now <?= icon('arrow-right', 'icon icon-sm') ?></span></a></li>
+        <li><a class="hp-cat" href="<?= e(url($t['href'])) ?>">
+          <img src="<?= e(media($t['image'], 400)) ?>" alt="" loading="lazy" width="400" height="500">
+          <span class="hp-cat-info"><strong><?= e($t['title']) ?></strong><?php if (!empty($t['count'])): ?><small><?= e(pluralize((int) $t['count'], 'product')) ?></small><?php endif; ?></span>
+          <span class="hp-cat-go" aria-hidden="true"><?= icon('arrow-right', 'icon icon-sm') ?></span>
+        </a></li>
       <?php endforeach; ?>
     </ul>
   </div>
@@ -138,56 +116,94 @@ $heroTitle = (string) ($hero['title'] ?? $sec['hero_title']);
 
 <?php /* ── New arrivals ── */ ?>
 <?php if (!empty($sec['show_new']) && $newArrivals): ?>
-<section class="px-section" aria-labelledby="new-title">
+<section class="hp-section hp-soft" aria-labelledby="new-title">
   <div class="container">
-    <?= $heading($sec['new_eyebrow'] ?: 'Just landed', $sec['new_title'] ?: 'New Arrivals', 'new-title') ?>
-    <?= $grid($newArrivals, $wishlistIds) ?>
-    <p class="center mt-4"><a class="btn px-btn-dark" href="<?= e(url('/new-arrivals')) ?>">View all new arrivals</a></p>
+    <div class="hp-head">
+      <div><span class="hp-eyebrow"><?= e($sec['new_eyebrow'] ?: 'Just landed') ?></span><h2 id="new-title"><?= e($sec['new_title'] ?: 'New arrivals') ?></h2></div>
+      <a class="hp-link" href="<?= e(url('/new-arrivals')) ?>">View all <?= icon('arrow-right', 'icon icon-sm') ?></a>
+    </div>
+    <div class="hp-products"><?= $grid($newArrivals, $wishlistIds) ?></div>
   </div>
 </section>
 <?php endif; ?>
 
-<?php /* ── Collections band (slanted, over photo) ── */ ?>
-<?php if ($edits): ?>
-<section class="px-band" aria-labelledby="edits-title">
-  <?php if ($hero && $hero['image_path']): ?><img class="px-band-bg" src="<?= e(media($hero['image_path'], 1600)) ?>" alt="" loading="lazy" width="1600" height="900"><?php endif; ?>
-  <div class="container">
-    <div class="px-band-head">
-      <div>
-        <span class="px-eyebrow">Our Collections</span>
-        <h2 id="edits-title"><?= e($sec['collections_title'] ?: 'Curated edits, made to last') ?></h2>
-        <p>Signature tailoring, everyday essentials and seasonal layers — each edit is put together by our team so you can shop a complete look in minutes.</p>
-      </div>
-      <a class="btn px-btn-silver" href="<?= e(url('/collections')) ?>">All collections</a>
-    </div>
-    <div class="px-glass-cards">
-      <?php foreach (array_slice($edits, 0, 3) as $i => $t): ?>
-        <a class="px-glass" href="<?= e(url($t['href'])) ?>">
-          <span class="px-icon-tile <?= $i === 0 ? 'is-lilac' : '' ?>"><?= icon(['layers', 'sparkle', 'box'][$i] ?? 'tag') ?></span>
-          <h3><?= e($t['title']) ?></h3>
-          <?php if ($t['subtitle']): ?><p><?= e($t['subtitle']) ?></p><?php endif; ?>
-          <span class="px-more">Shop the edit <?= icon('arrow-right', 'icon icon-sm') ?></span>
-        </a>
+<?php /* ── About + store figures ── */ ?>
+<section class="hp-section hp-about" aria-labelledby="about-title">
+  <div class="container hp-about-grid">
+    <div class="hp-about-art" aria-hidden="true">
+      <?php foreach (array_slice($mosaic, 2, 2) as $i => $p): ?>
+        <div class="hp-about-img hp-about-img-<?= $i + 1 ?>"><img src="<?= e(media($p['image'], 600)) ?>" alt="" width="400" height="500" loading="lazy"></div>
       <?php endforeach; ?>
+      <div class="hp-about-badge"><strong><?= (int) $stats['products'] ?>+</strong><span>styles in store</span></div>
     </div>
+    <div class="hp-about-copy">
+      <span class="hp-eyebrow"><?= e($home['story_eyebrow'] ?: 'About us') ?></span>
+      <h2 id="about-title"><?= e($home['story_title'] ?: 'Made with intent. Built to last.') ?></h2>
+      <?php if (trim((string) ($home['story_body'] ?? '')) !== ''): ?><p class="hp-lead"><?= nl2br(e($home['story_body'])) ?></p><?php endif; ?>
+      <div class="hp-values">
+        <div><span class="hp-ico"><?= icon('eye') ?></span><span><strong><?= e($home['vision_title'] ?? 'Our vision') ?></strong><small><?= e($home['vision_body'] ?? '') ?></small></span></div>
+        <div><span class="hp-ico"><?= icon('history') ?></span><span><strong><?= e($home['history_title'] ?? 'Our story') ?></strong><small><?= e($home['history_body'] ?? '') ?></small></span></div>
+      </div>
+      <ul class="hp-figures" aria-label="URAVEX in numbers">
+        <li><strong><?= (int) $stats['products'] ?>+</strong><span>Products</span></li>
+        <li><strong><?= (int) $stats['categories'] ?></strong><span>Categories</span></li>
+        <li><strong><?= (int) $stats['colours'] ?>+</strong><span>Colours</span></li>
+        <li><strong>50</strong><span>States we ship to</span></li>
+      </ul>
+      <?php if (!empty($home['story_cta_href'])): ?><a class="btn hp-btn-dark" href="<?= e(url($home['story_cta_href'])) ?>"><?= e($home['story_cta_label'] ?? 'Read more') ?><?= icon('arrow-right', 'icon icon-sm') ?></a><?php endif; ?>
+    </div>
+  </div>
+</section>
+
+<?php /* ── Collections: dark band, same look as the hero ── */ ?>
+<?php if ($edits): ?>
+<section class="hp-section hp-dark" aria-labelledby="edits-title">
+  <div class="container">
+    <div class="hp-head">
+      <div>
+        <span class="hp-eyebrow">Our collections</span>
+        <h2 id="edits-title"><?= e($sec['collections_title'] ?: 'Curated edits, made to last') ?></h2>
+        <p class="hp-sub">Signature tailoring, everyday essentials and seasonal layers — each edit is put together by our team so you can shop a complete look in minutes.</p>
+      </div>
+      <a class="btn hp-btn-gold" href="<?= e(url('/collections')) ?>">All collections <?= icon('arrow-right', 'icon icon-sm') ?></a>
+    </div>
+    <ul class="hp-edits">
+      <?php foreach (array_slice($edits, 0, 3) as $t): ?>
+        <li><a class="hp-edit" href="<?= e(url($t['href'])) ?>">
+          <?php if ($t['image']): ?><span class="hp-edit-media"><img src="<?= e(media($t['image'], 600)) ?>" alt="" loading="lazy" width="600" height="450"></span><?php endif; ?>
+          <span class="hp-edit-body">
+            <strong><?= e($t['title']) ?></strong>
+            <?php if ($t['subtitle']): ?><small><?= e($t['subtitle']) ?></small><?php endif; ?>
+            <span class="hp-edit-more"><?= !empty($t['count']) ? e(pluralize((int) $t['count'], 'piece')) . ' · ' : '' ?>Shop the edit <?= icon('arrow-right', 'icon icon-sm') ?></span>
+          </span>
+        </a></li>
+      <?php endforeach; ?>
+    </ul>
   </div>
 </section>
 <?php endif; ?>
 
 <?php /* ── Featured offer ── */ ?>
 <?php if ($promo && !empty($sec['show_promos'])): ?>
-<section class="px-section" aria-labelledby="promo-title">
+<section class="hp-section" aria-labelledby="promo-title">
   <div class="container">
-    <?= $heading($promo['eyebrow'] ?: 'Limited time', $promo['title'], 'promo-title') ?>
-    <div class="px-split">
-      <div class="px-split-media">
+    <div class="hp-offer">
+      <div class="hp-offer-media">
         <?php if ($promo['image_path']): ?><img src="<?= e(media($promo['image_path'], 800)) ?>" alt="<?= e($promo['image_alt']) ?>" loading="lazy" width="800" height="600">
         <?php elseif ($saleItem): ?><img src="<?= e(media($saleItem['image'], 800)) ?>" alt="<?= e($saleItem['title']) ?>" loading="lazy" width="600" height="800"><?php endif; ?>
+        <?php if ($saleItem && (int) $saleItem['regular'] > 0): ?><span class="hp-offer-off">−<?= (int) round(100 - 100 * (int) $saleItem['price'] / (int) $saleItem['regular']) ?>%</span><?php endif; ?>
       </div>
-      <div class="px-split-copy">
-        <?php if ($promo['subtitle']): ?><p class="px-lead"><?= e($promo['subtitle']) ?></p><?php endif; ?>
-        <?php if ($saleItem): ?><p class="px-price-line"><?= e($saleItem['title']) ?> — <strong><?= e(price((int) $saleItem['price'])) ?></strong> <s><?= e(price((int) $saleItem['regular'])) ?></s></p><?php endif; ?>
-        <?php if ($promo['cta_label'] && $promo['cta_href']): ?><a class="btn px-btn-dark" href="<?= e(url($promo['cta_href'])) ?>"><?= e($promo['cta_label']) ?></a><?php endif; ?>
+      <div class="hp-offer-copy">
+        <span class="hp-eyebrow"><?= e($promo['eyebrow'] ?: 'Limited time') ?></span>
+        <h2 id="promo-title"><?= e($promo['title']) ?></h2>
+        <?php if ($promo['subtitle']): ?><p class="hp-lead"><?= e($promo['subtitle']) ?></p><?php endif; ?>
+        <?php if ($saleItem): ?>
+          <a class="hp-offer-item" href="<?= e(url('/product/' . $saleItem['slug'])) ?>">
+            <span><small>Featured deal</small><strong><?= e($saleItem['title']) ?></strong></span>
+            <span class="hp-offer-price"><strong><?= e(price((int) $saleItem['price'])) ?></strong><s><?= e(price((int) $saleItem['regular'])) ?></s></span>
+          </a>
+        <?php endif; ?>
+        <?php if ($promo['cta_label'] && $promo['cta_href']): ?><a class="btn hp-btn-gold" href="<?= e(url($promo['cta_href'])) ?>"><?= e($promo['cta_label']) ?><?= icon('arrow-right', 'icon icon-sm') ?></a><?php endif; ?>
       </div>
     </div>
   </div>
@@ -196,63 +212,66 @@ $heroTitle = (string) ($hero['title'] ?? $sec['hero_title']);
 
 <?php /* ── Best sellers ── */ ?>
 <?php if ($bestSellers): ?>
-<section class="px-section px-tint" aria-labelledby="best-title">
+<section class="hp-section hp-soft" aria-labelledby="best-title">
   <div class="container">
-    <?= $heading($sec['bestsellers_eyebrow'] ?: 'Most loved', $sec['bestsellers_title'] ?: 'Best Sellers', 'best-title') ?>
-    <?= $grid($bestSellers, $wishlistIds) ?>
-  </div>
-</section>
-<?php endif; ?>
-
-<?php /* ── Shipping band (slanted) ── */ ?>
-<section class="px-band px-band-slim" aria-labelledby="ship-title">
-  <div class="container center">
-    <span class="px-eyebrow">Delivery</span>
-    <h2 id="ship-title">We ship all over the United States</h2>
-    <p>Tracked delivery to every state<?= $freeOver > 0 ? ', free on orders over ' . e(price($freeOver)) : '' ?>. Pay securely with USDT, BTC or ETH.</p>
-    <a class="btn px-btn-white" href="<?= e(url('/shop')) ?>">Start shopping</a>
-  </div>
-</section>
-
-<?php /* ── Sell on URAVEX ── */ ?>
-<?php if (App\Services\Marketplace::setting('applications_open')): ?>
-<section class="px-section" aria-labelledby="sell-title">
-  <div class="container">
-    <div class="px-sell">
-      <span class="px-icon-tile is-lilac"><?= icon('home') ?></span>
-      <div><span class="px-eyebrow">For brands &amp; makers</span><h2 id="sell-title">Sell on URAVEX</h2><p>Open your own shop, reach customers across the United States and get paid in USDT. No upfront fees — we only earn when you do.</p></div>
-      <a class="btn px-btn-dark" href="<?= e(url('/sell')) ?>">Open a shop</a>
+    <div class="hp-head">
+      <div><span class="hp-eyebrow"><?= e($sec['bestsellers_eyebrow'] ?: 'Most loved') ?></span><h2 id="best-title"><?= e($sec['bestsellers_title'] ?: 'Best sellers') ?></h2></div>
+      <a class="hp-link" href="<?= e(url('/shop')) ?>">Shop all <?= icon('arrow-right', 'icon icon-sm') ?></a>
     </div>
+    <div class="hp-products"><?= $grid($bestSellers, $wishlistIds) ?></div>
   </div>
 </section>
 <?php endif; ?>
+
+<?php /* ── Delivery + sell on URAVEX ── */ ?>
+<?php $sellOpen = App\Services\Marketplace::setting('applications_open'); ?>
+<section class="hp-section" aria-label="Delivery and selling">
+  <div class="container hp-duo<?= $sellOpen ? '' : ' is-single' ?>">
+    <div class="hp-promo-card is-dark">
+      <span class="hp-ico is-gold"><?= icon('truck') ?></span>
+      <span class="hp-eyebrow">Delivery</span>
+      <h2 id="ship-title">We ship all over the United States</h2>
+      <p>Tracked delivery to every state<?= $freeOver > 0 ? ', free on orders over ' . e(price($freeOver)) : '' ?>. Pay securely with USDT, BTC or ETH.</p>
+      <a class="btn hp-btn-gold" href="<?= e(url('/shop')) ?>">Start shopping <?= icon('arrow-right', 'icon icon-sm') ?></a>
+    </div>
+    <?php if ($sellOpen): ?>
+    <div class="hp-promo-card">
+      <span class="hp-ico"><?= icon('home') ?></span>
+      <span class="hp-eyebrow">For brands &amp; makers</span>
+      <h2 id="sell-title">Sell on URAVEX</h2>
+      <p>Open your own shop, reach customers across the United States and get paid in USDT. No upfront fees — we only earn when you do.</p>
+      <a class="btn hp-btn-dark" href="<?= e(url('/sell')) ?>">Open a shop <?= icon('arrow-right', 'icon icon-sm') ?></a>
+    </div>
+    <?php endif; ?>
+  </div>
+</section>
 
 <?php /* ── Membership ── */ ?>
 <?php if (!empty($sec['show_signup'])): ?>
-<section class="px-section px-member-wrap" aria-labelledby="signup-title">
+<section class="hp-section hp-member-wrap" aria-labelledby="signup-title">
   <div class="container">
-    <div class="px-member">
-      <div>
-        <span class="px-eyebrow"><?= e($sec['signup_eyebrow']) ?></span>
+    <div class="hp-member">
+      <div class="hp-member-copy">
+        <span class="hp-eyebrow"><?= e($sec['signup_eyebrow']) ?></span>
         <h2 id="signup-title"><?= e($sec['signup_title']) ?></h2>
         <p><?= e($sec['signup_body']) ?></p>
         <?php if (!$user): ?>
-          <div class="px-actions"><a class="btn px-btn-white" href="<?= e(url('/register')) ?>"><?= e($sec['signup_cta']) ?></a><a class="btn px-btn-ghost" href="<?= e(url('/login')) ?>">Sign in</a></div>
+          <div class="hp-actions"><a class="btn hp-btn-gold" href="<?= e(url('/register')) ?>"><?= e($sec['signup_cta']) ?></a><a class="btn hp-btn-line" href="<?= e(url('/login')) ?>">Sign in</a></div>
         <?php else: ?>
-          <form class="ft-news-row px-member-form" method="post" action="<?= e(url('/newsletter')) ?>">
+          <form class="hp-member-form" method="post" action="<?= e(url('/newsletter')) ?>">
             <?= csrf_field() ?>
             <label class="sr-only" for="su-email">Email address</label>
             <input class="input" id="su-email" type="email" name="email" required autocomplete="email" value="<?= e($user['email']) ?>">
             <input type="text" name="website" class="sr-only" tabindex="-1" autocomplete="off" aria-hidden="true">
-            <button class="btn px-btn-white" type="submit">Get deals by email</button>
+            <button class="btn hp-btn-gold" type="submit">Get deals by email</button>
           </form>
         <?php endif; ?>
       </div>
-      <ul class="px-perks" aria-label="Member benefits">
-        <li><span class="px-icon-tile is-light"><?= icon('heart') ?></span><span><strong>Save favourites</strong><small>Keep a wishlist on every device</small></span></li>
-        <li><span class="px-icon-tile is-light"><?= icon('box') ?></span><span><strong>Track every order</strong><small>Live status and tracking links</small></span></li>
-        <li><span class="px-icon-tile is-light"><?= icon('sparkle') ?></span><span><strong>First to new drops</strong><small>Early access to new collections</small></span></li>
-        <li><span class="px-icon-tile is-light"><?= icon('tag') ?></span><span><strong>Members-only offers</strong><small>Private sales by email</small></span></li>
+      <ul class="hp-perks" aria-label="Member benefits">
+        <li><span class="hp-ico is-gold"><?= icon('heart') ?></span><span><strong>Save favourites</strong><small>Keep a wishlist on every device</small></span></li>
+        <li><span class="hp-ico is-gold"><?= icon('box') ?></span><span><strong>Track every order</strong><small>Live status and tracking links</small></span></li>
+        <li><span class="hp-ico is-gold"><?= icon('sparkle') ?></span><span><strong>First to new drops</strong><small>Early access to new collections</small></span></li>
+        <li><span class="hp-ico is-gold"><?= icon('tag') ?></span><span><strong>Members-only offers</strong><small>Private sales by email</small></span></li>
       </ul>
     </div>
   </div>
