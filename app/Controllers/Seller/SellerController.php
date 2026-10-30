@@ -259,6 +259,7 @@ class SellerController extends Controller
         Audit::log('seller.settings', 'seller', (int) $s['id'], $changedAddress ? ['payout_address' => $s['payout_address']] : null, $changedAddress ? ['payout_address' => $address] : ['profile' => 'updated']);
         if ($changedAddress) {
             \App\Mail\Mailer::queue((string) Auth::user()['email'], 'seller_payout_changed', ['seller' => $s, 'address' => $address]);
+            \App\Mail\Mailer::flush();
         }
         return $this->redirect('/seller/settings', 'Shop settings saved.');
     }

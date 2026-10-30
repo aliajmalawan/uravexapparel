@@ -526,6 +526,14 @@ $staffMp = Fx::user('manager');
 T::throws(ValidationException::class, fn () => App\Services\Marketplace::decide($sid, 'reject', '', (int) $staffMp['id']), 'rejecting needs a reason');
 App\Services\Marketplace::decide($sid, 'approve', null, (int) $staffMp['id']);
 T::eq('approved', App\Services\Marketplace::seller($sid)['status'], 'seller approved');
+$approvalMail = $db->one("SELECT * FROM email_outbox WHERE template = 'seller_status' ORDER BY id DESC LIMIT 1");
+$sellerEmail = (string) $db->value('SELECT u.email FROM users u JOIN sellers s ON s.user_id = u.id WHERE s.id = ?', [$sid]);
+T::eq($sellerEmail, $approvalMail['to_email'] ?? null, 'approval email goes to the email the seller registered with');
+T::ok(str_contains((string) $approvalMail['subject'], 'approved'), 'approval email subject says approved');
+T::ok(str_contains((string) $approvalMail['html'], '/seller/login'), 'approval email links to the seller login');
+App\Mail\Mailer::$sent = [];
+App\Mail\Mailer::flush();
+T::ok((bool) array_filter(App\Mail\Mailer::$sent, static fn ($m) => $m['to'] === $sellerEmail && str_contains($m['subject'], 'approved')), 'approval email is delivered by flush');
 
 $rate = Fx::shipping(0);
 $sp = Fx::product(10000, null, 10); // 100.00

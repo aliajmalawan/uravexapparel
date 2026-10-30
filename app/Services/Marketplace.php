@@ -117,7 +117,7 @@ final class Marketplace
         });
         Audit::log('seller.' . $action, 'seller', $sellerId, ['status' => $from], ['status' => $to, 'note' => $note]);
         $email = (string) $db->value('SELECT email FROM users WHERE id = ?', [$s['user_id']]);
-        Mailer::queue($email, 'seller_status', ['seller' => $s, 'panelUrl' => url('/seller')]);
+        Mailer::queue($email, 'seller_status', ['seller' => $s, 'email' => $email, 'panelUrl' => url('/seller'), 'loginUrl' => url('/seller/login'), 'shopUrl' => url('/sellers/' . $s['slug'])]);
         return $s;
     }
 

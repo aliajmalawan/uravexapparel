@@ -355,8 +355,10 @@ T::eq('pending', (string) $db->value('SELECT status FROM sellers WHERE id = ?', 
 T::ok($s === 303 && str_ends_with((string) parse_url((string) $loc, PHP_URL_PATH), '/seller'), 'pending sellers cannot use the product pages');
 [$s] = http('POST', '/admin/sellers/' . $hsid . '/decide', ['action' => 'approve'], $staff);
 T::eq(403, $s, 'order staff cannot approve sellers');
+App\Mail\Mailer::$sent = [];
 http('POST', '/admin/sellers/' . $hsid . '/decide', ['action' => 'approve'], $manager);
 T::eq('approved', (string) $db->value('SELECT status FROM sellers WHERE id = ?', [$hsid]), 'manager approves the seller');
+T::ok((bool) array_filter(App\Mail\Mailer::$sent, static fn ($m) => $m['to'] === $sellerUser['email'] && str_contains($m['subject'], 'approved')), 'approval email is sent to the seller straight away');
 
 $cat = (int) $db->insert("INSERT INTO categories (name, slug, status) VALUES ('Denim test', 'denim-test-mp', 'active')");
 [$s, $loc] = http('POST', '/seller/products', ['title' => 'Raw Selvedge Jean', 'description' => '14oz raw selvedge denim, button fly, slim taper.', 'category_id' => (string) $cat, 'price' => '120.00'], $sellerUser);

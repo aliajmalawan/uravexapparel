@@ -57,6 +57,7 @@ final class SellerController extends AdminController
     public function decide(Request $r): Response
     {
         $s = Marketplace::decide((int) $r->params['id'], $r->str('action'), mb_substr(trim($r->str('note')), 0, 500) ?: null, $this->actorId());
+        Mailer::flush();
         return $this->redirect('/admin/sellers/' . $s['id'], 'Seller is now ' . $s['status'] . '. They have been emailed.');
     }
 
@@ -113,6 +114,7 @@ final class SellerController extends AdminController
         }
         Audit::log($approve ? 'seller.product_approve' : 'seller.product_reject', 'product', $id, null, ['note' => $note]);
         Mailer::queue($p['email'], 'seller_product_review', ['p' => $p, 'approved' => $approve, 'note' => $note, 'url' => url('/seller/products/' . $id)]);
+        Mailer::flush();
         return $this->redirect('/admin/sellers/reviews', $approve ? 'Product approved and live.' : 'Product sent back to the seller.');
     }
 
@@ -136,6 +138,7 @@ final class SellerController extends AdminController
     {
         $paid = $r->str('decision') === 'paid';
         Marketplace::processWithdrawal((int) $r->params['id'], $paid, $r->str('txid'), mb_substr(trim($r->str('note')), 0, 500) ?: null, $this->actorId());
+        Mailer::flush();
         return $this->redirect('/admin/withdrawals', $paid ? 'Withdrawal marked as paid. The seller has been emailed.' : 'Withdrawal rejected; the amount is back in the seller\'s balance.');
     }
 }
