@@ -55,7 +55,7 @@ $meta = $meta ?? ['full_title' => 'URAVEX Apparel', 'description' => '', 'noinde
       <button class="icon-btn menu-toggle" type="button" aria-label="Open menu" aria-controls="mobile-menu" aria-expanded="false" data-drawer-open="mobile-menu"><?= icon('menu') ?></button>
       <a class="brand" href="<?= e(url('/')) ?>" aria-label="URAVEX Apparel — home">
         <img src="<?= e(brand_emblem(96)) ?>" width="40" height="40" alt="">
-        <?php if (!empty($settings['branding']['show_wordmark'])): ?><span class="brand-word">URAVEX<small>APPAREL</small></span><?php endif; ?>
+        <?php if (!empty($settings['branding']['show_wordmark'])): ?><span class="brand-word">URAVEX<small>STORE</small></span><?php endif; ?>
       </a>
     </div>
     <?php

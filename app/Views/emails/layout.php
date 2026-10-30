@@ -12,7 +12,7 @@
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;background:#FFFFFF;border:1px solid #E5E5E5;">
       <tr><td align="center" style="background:#0B0B0B;padding:22px 24px;border-bottom:2px solid #C89B3C;">
         <span style="font-family:Arial,Helvetica,sans-serif;font-size:20px;letter-spacing:8px;font-weight:bold;color:#FFFFFF;">URAVEX</span><br>
-        <span style="font-size:10px;letter-spacing:6px;color:#E5C16B;">APPAREL</span>
+        <span style="font-size:10px;letter-spacing:6px;color:#E5C16B;">STORE</span>
       </td></tr>
       <tr><td style="padding:28px 24px;font-size:15px;line-height:1.6;">
         <?= $body ?>

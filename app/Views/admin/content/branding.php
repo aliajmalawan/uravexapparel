@@ -8,7 +8,7 @@
       <div class="brand-preview dark mt-4"><img src="<?= e(brand_emblem(96)) ?>" alt="Current emblem" width="72" height="72"></div>
       <div class="field mt-4"><label for="emblem">Upload new emblem</label><input class="input" id="emblem" name="emblem" type="file" accept="image/png,image/webp,image/jpeg"><?= error_text('file') ?></div>
       <?php if (!empty($b['emblem'])): ?><label class="check"><input type="checkbox" name="reset_emblem" value="1"> Restore the original emblem</label><?php endif; ?>
-      <label class="check"><input type="checkbox" name="show_wordmark" value="1"<?= !empty($b['show_wordmark']) ? ' checked' : '' ?>> Show the “URAVEX APPAREL” text next to the emblem (desktop and tablet)</label>
+      <label class="check"><input type="checkbox" name="show_wordmark" value="1"<?= !empty($b['show_wordmark']) ? ' checked' : '' ?>> Show the “URAVEX STORE” text next to the emblem (desktop and tablet)</label>
     </section>
     <section class="card">
       <h2>Full logo (light pages)</h2>

@@ -13,7 +13,7 @@ $phone = trim((string) ($store['support_phone'] ?? ''));
 <footer class="site-footer ft on-dark">
   <div class="container ft-top">
     <div class="ft-brand">
-      <a class="ft-logo" href="<?= e(url('/')) ?>" aria-label="URAVEX Apparel home"><img src="<?= e(brand_emblem(96)) ?>" width="44" height="44" alt=""><span class="brand-word">URAVEX<small>APPAREL</small></span></a>
+      <a class="ft-logo" href="<?= e(url('/')) ?>" aria-label="URAVEX Store home"><img src="<?= e(brand_emblem(96)) ?>" width="44" height="44" alt=""><span class="brand-word">URAVEX<small>STORE</small></span></a>
       <?php if (!empty($footer['about'])): ?><p class="ft-about"><?= e($footer['about']) ?></p><?php endif; ?>
       <form class="ft-news" method="post" action="<?= e(url('/newsletter')) ?>">
         <?= csrf_field() ?>

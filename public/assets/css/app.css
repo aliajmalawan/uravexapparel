@@ -1395,7 +1395,7 @@ a:hover { color: var(--gold-dark); }
 .cat-rail a { color: #2A2A2A; }
 .cat-rail a:hover, .cat-rail a:hover .icon { color: var(--gold-dark); }
 
-/* Wordmark styled like the logo: URAVEX white, APPAREL gold between gold rules */
+/* Wordmark styled like the logo: URAVEX white, STORE gold between gold rules */
 .brand-word { font-family: var(--font-display); font-weight: 800; letter-spacing: .26em; color: #fff; }
 .brand-word small { display: flex; align-items: center; gap: 6px; font-family: var(--font-display); font-weight: 700; letter-spacing: .42em; background: var(--gold-grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
 .brand-word small::before, .brand-word small::after { content: ""; flex: 1 1 10px; height: 1px; min-width: 8px; background: var(--gold-grad); }
@@ -1672,7 +1672,7 @@ body.theme-logo {
 body.theme-logo .site-header { border-bottom: 0; box-shadow: 0 6px 24px rgba(0,0,0,.35); }
 body.theme-logo .site-header::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: var(--gold-grad); pointer-events: none; }
 
-/* Wordmark: URAVEX in silver (like the "U"), APPAREL in gold (like the "V") */
+/* Wordmark: URAVEX in silver (like the "U"), STORE in gold (like the "V") */
 body.theme-logo .brand-word { background: var(--silver-grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
 body.theme-logo .brand img { filter: drop-shadow(0 0 10px rgba(240,192,96,.28)); }
 
