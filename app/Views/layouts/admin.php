@@ -66,7 +66,6 @@ $u = Auth::user();
         <form method="post" action="<?= e(url('/logout')) ?>"><?= csrf_field() ?><input type="hidden" name="portal" value="admin"><button class="icon-btn" type="submit" aria-label="Sign out"><?= icon('logout') ?></button></form>
       </div>
     </header>
-    <?php if (!App\Core\Config::isProduction()): ?><div class="sandbox-banner" role="note">Development environment — demo data and sandbox payments may be present. Analytics exclude sandbox orders<?= App\Core\Config::isProduction() ? ' and demo data' : '' ?>.</div><?php endif; ?>
     <div class="admin-content" id="main" tabindex="-1">
       <?php foreach (['success', 'error', 'warning', 'info'] as $type): ?>
         <?php if ($msg = flash($type)): ?><div class="alert alert-<?= $type ?>" role="<?= $type === 'error' ? 'alert' : 'status' ?>"><p><?= e($msg) ?></p></div><?php endif; ?>
