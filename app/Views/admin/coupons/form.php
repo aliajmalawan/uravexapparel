@@ -26,8 +26,8 @@ $m = static fn ($minor) => $minor === null || $minor === '' ? '' : rtrim(rtrim(A
     <section class="card">
       <h2>Limits &amp; eligibility</h2>
       <div class="form-row c2 mt-4">
-        <div class="field"><label for="starts_at">Starts (PKT)</label><input class="input" id="starts_at" name="starts_at" type="datetime-local" value="<?= e(old('starts_at', utc_to_local_input($c['starts_at'] ?? null))) ?>"<?= error_attrs('starts_at') ?>><?= error_text('starts_at') ?></div>
-        <div class="field"><label for="ends_at">Ends (PKT)</label><input class="input" id="ends_at" name="ends_at" type="datetime-local" value="<?= e(old('ends_at', utc_to_local_input($c['ends_at'] ?? null))) ?>"<?= error_attrs('ends_at') ?>><?= error_text('ends_at') ?></div>
+        <div class="field"><label for="starts_at">Starts (<?= e(tz_abbr()) ?>)</label><input class="input" id="starts_at" name="starts_at" type="datetime-local" value="<?= e(old('starts_at', utc_to_local_input($c['starts_at'] ?? null))) ?>"<?= error_attrs('starts_at') ?>><?= error_text('starts_at') ?></div>
+        <div class="field"><label for="ends_at">Ends (<?= e(tz_abbr()) ?>)</label><input class="input" id="ends_at" name="ends_at" type="datetime-local" value="<?= e(old('ends_at', utc_to_local_input($c['ends_at'] ?? null))) ?>"<?= error_attrs('ends_at') ?>><?= error_text('ends_at') ?></div>
         <div class="field"><label for="usage_limit">Total uses</label><input class="input" id="usage_limit" name="usage_limit" type="number" min="1" value="<?= e($v('usage_limit')) ?>" placeholder="Unlimited"<?= error_attrs('usage_limit') ?>><?= error_text('usage_limit') ?><?php if ($c): ?><p class="hint">Used <?= (int) $c['usage_count'] ?> times.</p><?php endif; ?></div>
         <div class="field"><label for="per_customer_limit">Uses per customer</label><input class="input" id="per_customer_limit" name="per_customer_limit" type="number" min="1" value="<?= e($v('per_customer_limit')) ?>" placeholder="Unlimited"><p class="hint">Counted by account and by email for guests.</p></div>
       </div>

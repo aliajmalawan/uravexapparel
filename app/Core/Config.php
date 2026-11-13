@@ -27,7 +27,7 @@ final class Config
             'base_path' => rtrim($parts['path'] ?? '', '/'),
             'https' => ($parts['scheme'] ?? 'http') === 'https',
             'key' => (string) Env::get('APP_KEY', ''),
-            'timezone' => (string) Env::get('BUSINESS_TIMEZONE', 'Asia/Karachi'),
+            'timezone' => in_array((string) Env::get('BUSINESS_TIMEZONE', ''), \DateTimeZone::listIdentifiers(), true) ? (string) Env::get('BUSINESS_TIMEZONE') : 'America/New_York',
             'currency' => (string) Env::get('DEFAULT_CURRENCY', 'PKR'),
             'trusted_proxy_hops' => (int) Env::get('TRUSTED_PROXY_HOPS', '0'),
             'db' => [

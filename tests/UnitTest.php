@@ -190,3 +190,12 @@ $useUrl('http://localhost/uravexapparel');
 T::eq(null, App\Core\Config::adaptTo(false, 'localhost', '/uravexapparel/shop'), 'localhost is never redirected');
 T::eq(null, App\Core\Config::adaptTo(false, '127.0.0.1', '/uravexapparel/shop'), 'other hosts are not treated as twins');
 App\Core\Config::set('url', $savedUrl[0]); App\Core\Config::set('https', $savedUrl[1]); App\Core\Config::set('base_path', $savedUrl[2]);
+
+T::$current = 'US business timezone';
+$savedTz = App\Core\Config::get('timezone');
+App\Core\Config::set('timezone', 'America/New_York');
+T::eq('12:00', dt('2026-07-01 16:00:00', 'H:i'), 'UTC 16:00 shows as 12:00 New York time in summer (EDT)');
+T::eq('11:00', dt('2026-12-01 16:00:00', 'H:i'), 'UTC 16:00 shows as 11:00 New York time in winter (EST)');
+T::eq('2026-07-02 03:59:59', local_to_utc('2026-07-01', true), 'end of a New York day stored in UTC');
+T::ok(in_array(tz_abbr(), ['EST', 'EDT'], true), 'timezone label is EST/EDT');
+App\Core\Config::set('timezone', $savedTz);

@@ -134,6 +134,12 @@ function dt(?string $utc, string $format = 'j M Y, g:i a'): string
     return $d->setTimezone(new DateTimeZone((string) Config::get('timezone'))) ->format($format);
 }
 
+/** Short name of the business timezone right now, e.g. "EST" / "EDT". */
+function tz_abbr(): string
+{
+    return (new DateTimeImmutable('now', new DateTimeZone((string) Config::get('timezone'))))->format('T');
+}
+
 function date_only(?string $utc): string
 {
     return dt($utc, 'j M Y');

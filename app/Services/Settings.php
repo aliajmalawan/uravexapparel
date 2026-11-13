@@ -23,7 +23,7 @@ final class Settings
             'support_phone' => '',
             'whatsapp' => '',
             'address' => '',
-            'business_hours' => 'Mon–Sat, 10am – 7pm PKT',
+            'business_hours' => 'Mon–Sat, 10am – 7pm ET',
         ],
         'announcement' => [
             'enabled' => true,
