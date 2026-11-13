@@ -14,6 +14,12 @@ require dirname(__DIR__) . '/app/bootstrap.php';
 
 $request = Request::capture();
 
+$canonical = App\Core\Config::adaptTo($request->isHttps(), (string) ($request->server['HTTP_HOST'] ?? ''), (string) ($request->server['REQUEST_URI'] ?? '/'));
+if ($canonical !== null && in_array($request->method, ['GET', 'HEAD'], true)) {
+    App\Core\Response::redirect($canonical, 301)->send();
+    return;
+}
+
 try {
     Session::start($request);
     Audit::context($request->ip(), $request->userAgent());

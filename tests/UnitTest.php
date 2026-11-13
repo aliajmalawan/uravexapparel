@@ -168,3 +168,25 @@ foreach (['(646) 555-0199', '+1 646 555 0199', '646.555.0199', '6465550199'] as 
     T::ok(!Validator::make(['p' => $ph], ['p' => 'phone'])->fails(), "phone {$ph} accepted");
 }
 T::ok(Validator::make(['p' => '(12)'], ['p' => 'phone'])->fails(), 'too-short phone rejected');
+
+T::$current = 'Live URL (APP_URL vs how the visitor arrived)';
+$savedUrl = [App\Core\Config::get('url'), App\Core\Config::get('https'), App\Core\Config::get('base_path')];
+$useUrl = static function (string $u): void {
+    App\Core\Config::set('url', $u);
+    App\Core\Config::set('https', str_starts_with($u, 'https://'));
+    App\Core\Config::set('base_path', rtrim((string) (parse_url($u, PHP_URL_PATH) ?? ''), '/'));
+};
+$useUrl('http://uravex.store');
+T::eq(null, App\Core\Config::adaptTo(true, 'uravex.store', '/admin/login'), 'same host: no redirect');
+T::eq('https://uravex.store/admin/login', url('/admin/login'), 'http:// APP_URL is upgraded on an HTTPS request, so the login form keeps the secure cookie');
+$useUrl('https://uravex.store');
+T::eq('https://uravex.store/admin/login?x=1', App\Core\Config::adaptTo(true, 'www.uravex.store', '/admin/login?x=1'), 'www twin redirects to the canonical host');
+$useUrl('https://www.uravex.store');
+T::eq('https://www.uravex.store/', App\Core\Config::adaptTo(true, 'uravex.store:443', '/'), 'bare twin redirects to a www canonical host');
+$useUrl('http://uravex.store');
+App\Core\Config::adaptTo(false, 'uravex.store', '/');
+T::eq('http://uravex.store/shop', url('/shop'), 'plain-http requests are left alone');
+$useUrl('http://localhost/uravexapparel');
+T::eq(null, App\Core\Config::adaptTo(false, 'localhost', '/uravexapparel/shop'), 'localhost is never redirected');
+T::eq(null, App\Core\Config::adaptTo(false, '127.0.0.1', '/uravexapparel/shop'), 'other hosts are not treated as twins');
+App\Core\Config::set('url', $savedUrl[0]); App\Core\Config::set('https', $savedUrl[1]); App\Core\Config::set('base_path', $savedUrl[2]);

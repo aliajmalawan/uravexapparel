@@ -89,6 +89,34 @@ final class Config
         }
     }
 
+    /**
+     * Aligns the configured URL with how the visitor actually reached the site:
+     *  - APP_URL written as http:// on an HTTPS site is upgraded to https://, otherwise forms post to
+     *    http:// where the browser withholds the secure session cookie and sign-in loops back.
+     *  - On the www / non-www twin of APP_URL's host, returns the canonical URL to redirect to, because
+     *    the session cookie is host-only and would not reach the canonical host the forms post to.
+     */
+    public static function adaptTo(bool $https, string $host, string $requestUri): ?string
+    {
+        $parts = parse_url((string) self::$c['url']) ?: [];
+        if ($https && ($parts['scheme'] ?? '') === 'http') {
+            self::$c['url'] = 'https://' . substr((string) self::$c['url'], 7);
+            self::$c['https'] = true;
+        }
+        $canonical = strtolower((string) ($parts['host'] ?? ''));
+        $host = strtolower(preg_replace('/:\d+$/', '', $host) ?? '');
+        if ($canonical === '' || $host === '' || $host === $canonical || !in_array($host, ['www.' . $canonical, preg_replace('/^www\./', '', $canonical)], true) || !str_contains($canonical, '.')) {
+            return null;
+        }
+        $base = (string) self::$c['url'];
+        $path = (string) self::$c['base_path'];
+        $uri = '/' . ltrim($requestUri, '/');
+        if ($path !== '' && str_starts_with($uri, $path)) {
+            $uri = substr($uri, strlen($path)) ?: '/';
+        }
+        return $base . $uri;
+    }
+
     public static function get(string $key, mixed $default = null): mixed
     {
         $value = self::$c;
