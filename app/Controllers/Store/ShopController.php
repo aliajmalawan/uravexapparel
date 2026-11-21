@@ -113,7 +113,7 @@ final class ShopController extends Controller
             'path' => '/category/' . $c['slug'], 'heading' => $c['name'], 'eyebrow' => 'Category', 'intro' => $c['description'],
             'title' => $c['seo_title'] ?: $c['name'], 'description' => $c['seo_description'] ?: $c['description'],
             'filters' => ['category' => $c['slug']],
-            'breadcrumbs' => [['Shop', '/shop']],
+            'breadcrumbs' => array_merge([['Shop', '/shop']], ($parent = $c['parent_id'] ? \App\Core\Database::get()->one("SELECT name, slug FROM categories WHERE id = ? AND status = 'active'", [$c['parent_id']]) : null) ? [[$parent['name'], '/category/' . $parent['slug']]] : []),
         ]);
     }
 

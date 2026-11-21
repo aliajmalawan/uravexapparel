@@ -143,6 +143,7 @@ $router->group('/admin', ['staff'], static function ($r): void {
     $r->post('/categories', [Admin\CategoryController::class, 'save'], ['perm:catalog.manage']);
     $r->post('/categories/{id:\d+}/archive', [Admin\CategoryController::class, 'archive'], ['perm:catalog.manage']);
     $r->post('/categories/{id:\d+}/delete', [Admin\CategoryController::class, 'destroy'], ['perm:catalog.manage']);
+    $r->post('/categories/{id:\d+}/move', [Admin\CategoryController::class, 'move'], ['perm:catalog.manage']);
     $r->get('/collections', [Admin\CollectionController::class, 'index'], ['perm:catalog.manage']);
     $r->post('/collections', [Admin\CollectionController::class, 'save'], ['perm:catalog.manage']);
     $r->get('/collections/{id:\d+}', [Admin\CollectionController::class, 'edit'], ['perm:catalog.manage']);

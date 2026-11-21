@@ -124,3 +124,63 @@
     });
   });
 })();
+(function () {
+  'use strict';
+  /* Categories page: live search over the tree */
+  var search = document.querySelector('[data-cat-search]');
+  var tree = document.querySelector('[data-cat-tree]');
+  if (search && tree) {
+    var empty = document.querySelector('[data-cat-empty]');
+    var nodes = Array.prototype.slice.call(tree.querySelectorAll('.cat-node'));
+    search.addEventListener('input', function () {
+      var q = search.value.trim().toLowerCase();
+      var shown = 0;
+      nodes.forEach(function (node) {
+        var match = !q || node.getAttribute('data-search').indexOf(q) !== -1;
+        node.hidden = !match;
+        if (match) shown++;
+        var group = node.querySelector('details');
+        var parentHit = q && node.querySelector('.cat-row.is-parent').textContent.toLowerCase().indexOf(q) !== -1;
+        Array.prototype.forEach.call(node.querySelectorAll('.cat-row.is-child'), function (kid) {
+          kid.hidden = !!q && !parentHit && kid.getAttribute('data-search').indexOf(q) === -1;
+        });
+        if (group && q && match) group.open = true;
+      });
+      if (empty) empty.hidden = shown > 0;
+    });
+  }
+
+  /* Character counters: <span class="char-count" data-count-for="field" data-ideal="60"> */
+  Array.prototype.forEach.call(document.querySelectorAll('[data-count-for]'), function (out) {
+    var field = document.getElementById(out.getAttribute('data-count-for'));
+    if (!field) return;
+    var ideal = Number(out.getAttribute('data-ideal')) || 0;
+    var max = Number(field.getAttribute('maxlength')) || 0;
+    var update = function () {
+      var n = field.value.length;
+      out.textContent = ideal ? n + ' / ' + ideal + ' recommended' : n + (max ? ' / ' + max : '');
+      out.classList.toggle('is-over', ideal > 0 && n > ideal);
+    };
+    field.addEventListener('input', update);
+    update();
+  });
+
+  /* Google preview for the category being edited */
+  var preview = document.querySelector('[data-seo-preview]');
+  if (preview) {
+    var get = function (sel) { var el = document.querySelector(sel); return el ? el.value.trim() : ''; };
+    var desc = document.getElementById('description');
+    var render = function () {
+      var name = get('[data-seo-name]');
+      var slug = get('[data-seo-slug]') || name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+      preview.querySelector('.seo-url').textContent = preview.getAttribute('data-site') + '/category/' + (slug || 'your-category');
+      preview.querySelector('.seo-title').textContent = get('[data-seo-title]') || (name ? name + ' | URAVEX Store' : 'Category name | URAVEX Store');
+      preview.querySelector('.seo-desc').textContent = get('[data-seo-desc]') || (desc ? desc.value.trim() : '') || 'Add a short description so shoppers and search engines know what this category offers.';
+    };
+    ['[data-seo-name]', '[data-seo-slug]', '[data-seo-title]', '[data-seo-desc]', '#description'].forEach(function (sel) {
+      var el = document.querySelector(sel);
+      if (el) el.addEventListener('input', render);
+    });
+    render();
+  }
+})();

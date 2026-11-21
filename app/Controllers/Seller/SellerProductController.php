@@ -45,7 +45,7 @@ final class SellerProductController extends SellerController
 
     private function categories(): array
     {
-        return Database::get()->all("SELECT id, name FROM categories WHERE status = 'active' ORDER BY sort_order, name");
+        return \App\Services\Catalog::categoryOptions();
     }
 
     public function index(Request $r): Response

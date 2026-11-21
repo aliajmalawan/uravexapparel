@@ -10,3 +10,6 @@
 /public/uploads/*
 !/public/uploads/.htaccess
 /tests/.tmp/
+
+# Local product photo drop folder (not part of the site)
+/Product_Images/

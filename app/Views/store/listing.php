@@ -69,15 +69,29 @@ $filterForm = static function (string $idPrefix, bool $auto = false) use ($filte
   <?php if ($eyebrow): ?><span class="eyebrow"><?= e($eyebrow) ?></span><?php endif; ?>
   <h1><?= e($heading) ?></h1>
   <?php if ($intro): ?><p class="muted"><?= e($intro) ?></p><?php endif; ?>
-  <?php if ($categories && $basePath !== '/search'): ?>
+  <?php if ($categories && $basePath !== '/search'):
+    $catById = array_column($categories, null, 'id');
+    $activeCat = null;
+    foreach ($categories as $cat) { if ($cat['slug'] === $activeCategory) { $activeCat = $cat; } }
+    $activeTop = $activeCat && $activeCat['parent_id'] !== null && isset($catById[$activeCat['parent_id']]) ? $catById[$activeCat['parent_id']] : $activeCat;
+    $subs = $activeTop ? array_values(array_filter($categories, static fn ($c) => (string) $c['parent_id'] === (string) $activeTop['id'] && ($c['product_count'] > 0 || $c['slug'] === $activeCategory))) : [];
+  ?>
     <nav class="category-pills" aria-label="Categories">
       <a href="<?= e(url('/shop')) ?>"<?= $basePath === '/shop' ? ' aria-current="page"' : '' ?>>All</a>
-      <?php foreach ($categories as $cat): ?>
-        <?php if ($cat['product_count'] > 0 || $activeCategory === $cat['slug']): ?>
-          <a href="<?= e(url('/category/' . $cat['slug'])) ?>"<?= $activeCategory === $cat['slug'] ? ' aria-current="page"' : '' ?>><?= e($cat['name']) ?></a>
+      <?php foreach ($categories as $cat): if ($cat['parent_id'] !== null) { continue; } ?>
+        <?php if ($cat['product_count'] > 0 || ($activeTop && $activeTop['slug'] === $cat['slug'])): ?>
+          <a href="<?= e(url('/category/' . $cat['slug'])) ?>"<?= $activeTop && $activeTop['slug'] === $cat['slug'] ? ' aria-current="page"' : '' ?>><?= e($cat['name']) ?></a>
         <?php endif; ?>
       <?php endforeach; ?>
     </nav>
+    <?php if ($subs): ?>
+    <nav class="category-pills subcategory-pills" aria-label="<?= e($activeTop['name']) ?> subcategories">
+      <a href="<?= e(url('/category/' . $activeTop['slug'])) ?>"<?= $activeCategory === $activeTop['slug'] ? ' aria-current="page"' : '' ?>>All <?= e($activeTop['name']) ?></a>
+      <?php foreach ($subs as $sub): ?>
+        <a href="<?= e(url('/category/' . $sub['slug'])) ?>"<?= $activeCategory === $sub['slug'] ? ' aria-current="page"' : '' ?>><?= e($sub['name']) ?></a>
+      <?php endforeach; ?>
+    </nav>
+    <?php endif; ?>
   <?php endif; ?>
 </header>
 

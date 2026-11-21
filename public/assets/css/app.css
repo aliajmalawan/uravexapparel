@@ -2040,3 +2040,11 @@ body .hp-member h2 { color: #fff; }
 @media (min-width: 600px) and (max-width: 1023px) {
   .hp-products .product-grid > li:nth-child(n+7) { display: none; }
 }
+
+/* Subcategories: links under each category in the Shop dropdown, and a second pill row on category pages */
+.nav-mega-subs { list-style: none; margin: -4px 0 6px; padding: 0 12px 0 66px; display: flex; flex-wrap: wrap; gap: 2px 12px; }
+body[class] .site-header .main-nav .nav-mega .nav-mega-subs a { display: inline; padding: 2px 0; border-radius: 0; background: none; font-size: .8rem; font-weight: 500; color: var(--t-body, #545454); }
+body[class] .site-header .main-nav .nav-mega .nav-mega-subs a:hover,
+body[class] .site-header .main-nav .nav-mega .nav-mega-subs a[aria-current="page"] { background: none; color: var(--t-accent-dk, #8F5F17); text-decoration: underline; }
+.subcategory-pills { margin-top: 10px; }
+.subcategory-pills a { font-size: .85em; }

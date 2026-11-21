@@ -226,11 +226,49 @@ final class Catalog
         return self::hydrateCards($rows);
     }
 
+    /** Active categories; product_count includes products in a category's active subcategories. */
     public static function categories(): array
     {
         return Database::get()->all(
-            "SELECT c.*, (SELECT COUNT(*) FROM products p WHERE p.category_id = c.id AND " . self::VISIBLE . ") AS product_count
+            "SELECT c.*, (SELECT COUNT(*) FROM products p WHERE (p.category_id = c.id OR p.category_id IN (SELECT ch.id FROM categories ch WHERE ch.parent_id = c.id AND ch.status = 'active')) AND " . self::VISIBLE . ") AS product_count
              FROM categories c WHERE c.status = 'active' ORDER BY c.sort_order, c.name"
+        );
+    }
+
+    /**
+     * Top-level categories with their subcategories under 'children'.
+     * $withProducts keeps only (sub)categories that have something to show.
+     *
+     * @return list<array>
+     */
+    public static function categoryTree(bool $withProducts = true): array
+    {
+        $all = self::categories();
+        $top = [];
+        foreach ($all as $c) {
+            // Subcategories of an archived main category stay hidden rather than surfacing as main categories.
+            if ($c['parent_id'] === null) {
+                $c['children'] = [];
+                $top[(int) $c['id']] = $c;
+            }
+        }
+        foreach ($all as $c) {
+            if ($c['parent_id'] !== null && isset($top[(int) $c['parent_id']]) && (!$withProducts || (int) $c['product_count'] > 0)) {
+                $top[(int) $c['parent_id']]['children'][] = $c;
+            }
+        }
+        return array_values(array_filter($top, static fn ($c) => !$withProducts || (int) $c['product_count'] > 0));
+    }
+
+    /** Category options for product forms: subcategories follow their parent as "Parent › Child". */
+    public static function categoryOptions(bool $activeOnly = true, int $alwaysInclude = 0): array
+    {
+        return Database::get()->all(
+            "SELECT c.id, IF(p.id IS NULL, c.name, CONCAT(p.name, ' › ', c.name)) AS name
+             FROM categories c LEFT JOIN categories p ON p.id = c.parent_id
+             WHERE " . ($activeOnly ? "(c.status = 'active' OR c.id = ?)" : '? >= 0') . "
+             ORDER BY COALESCE(p.sort_order, c.sort_order), COALESCE(p.id, c.id), c.parent_id IS NOT NULL, c.sort_order, c.name",
+            [$alwaysInclude]
         );
     }
 
@@ -296,12 +334,12 @@ final class Catalog
             $tiles[] = ['title' => $c['name'], 'subtitle' => str_limit((string) $c['description'], 60), 'href' => '/collections/' . $c['slug'], 'image' => $img ?: null, 'count' => (int) $c['product_count']];
         }
         foreach (self::categories() as $c) {
-            if ((int) $c['product_count'] === 0) {
+            if ((int) $c['product_count'] === 0 || $c['parent_id'] !== null) {
                 continue;
             }
             $img = $c['image_url'] ?: $db->value(
-                'SELECT pi.path FROM product_images pi JOIN products p ON p.id = pi.product_id WHERE p.category_id = ? AND pi.position = 0 AND ' . self::VISIBLE . ' ORDER BY p.featured DESC, p.published_at DESC LIMIT 1',
-                [$c['id']]
+                'SELECT pi.path FROM product_images pi JOIN products p ON p.id = pi.product_id WHERE (p.category_id = ? OR p.category_id IN (SELECT id FROM categories WHERE parent_id = ?)) AND pi.position = 0 AND ' . self::VISIBLE . ' ORDER BY p.featured DESC, p.published_at DESC LIMIT 1',
+                [$c['id'], $c['id']]
             );
             $tiles[] = ['title' => $c['name'], 'subtitle' => str_limit((string) $c['description'], 60), 'href' => '/category/' . $c['slug'], 'image' => $img ?: null, 'count' => (int) $c['product_count']];
         }

@@ -65,7 +65,7 @@ final class ProductController extends AdminController
         $db = Database::get();
         return [
             'p' => $product,
-            'categories' => $db->all("SELECT id, name FROM categories WHERE status = 'active' OR id = ? ORDER BY sort_order, name", [$product['category_id'] ?? 0]),
+            'categories' => \App\Services\Catalog::categoryOptions(true, (int) ($product['category_id'] ?? 0)),
             'collections' => $db->all('SELECT id, name FROM collections ORDER BY sort_order, name'),
             'selectedCollections' => $product ? array_map('intval', $db->column('SELECT collection_id FROM product_collections WHERE product_id = ?', [$product['id']])) : [],
             'variants' => $product ? $db->all('SELECT * FROM product_variants WHERE product_id = ? ORDER BY position, id', [$product['id']]) : [],

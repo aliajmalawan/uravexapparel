@@ -59,7 +59,7 @@ $meta = $meta ?? ['full_title' => 'URAVEX Apparel', 'description' => '', 'noinde
       </a>
     </div>
     <?php
-      $menuCats = array_values(array_filter(App\Services\Catalog::categories(), static fn ($c) => (int) $c['product_count'] > 0));
+      $menuCats = App\Services\Catalog::categoryTree();
       // The category dropdown hangs off the "Shop" link; if the menu has none, it is added after the first link.
       $menuNav = $nav;
       if ($menuCats && !isset($menuNav['/shop'])) {
@@ -76,7 +76,9 @@ $meta = $meta ?? ['full_title' => 'URAVEX Apparel', 'description' => '', 'noinde
               <div class="nav-mega-inner">
                 <ul class="nav-mega-cats">
                   <?php foreach ($menuCats as $c): ?>
-                    <li><a href="<?= e(url('/category/' . $c['slug'])) ?>"<?= ($currentPath ?? '') === '/category/' . $c['slug'] ? ' aria-current="page"' : '' ?>><span class="nav-mega-icon"><?= icon($c['icon'] ?: 'hanger') ?></span><span><strong><?= e($c['name']) ?></strong><small><?= (int) $c['product_count'] ?> products</small></span></a></li>
+                    <li><a href="<?= e(url('/category/' . $c['slug'])) ?>"<?= ($currentPath ?? '') === '/category/' . $c['slug'] ? ' aria-current="page"' : '' ?>><span class="nav-mega-icon"><?= icon($c['icon'] ?: 'hanger') ?></span><span><strong><?= e($c['name']) ?></strong><small><?= (int) $c['product_count'] ?> products</small></span></a>
+                      <?php if ($c['children']): ?><ul class="nav-mega-subs"><?php foreach ($c['children'] as $sub): ?><li><a href="<?= e(url('/category/' . $sub['slug'])) ?>"<?= ($currentPath ?? '') === '/category/' . $sub['slug'] ? ' aria-current="page"' : '' ?>><?= e($sub['name']) ?></a></li><?php endforeach; ?></ul><?php endif; ?>
+                    </li>
                   <?php endforeach; ?>
                 </ul>
                 <ul class="nav-mega-quick">
