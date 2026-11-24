@@ -157,7 +157,7 @@ final class CsvImport
                     continue;
                 }
                 foreach ($products as $other) {
-                    if ($other['slug'] === $slug) {
+                    if ($other['data']['slug'] === $slug) {
                         $err("slug \"{$slug}\" is used by two products in this file.");
                         continue 2;
                     }

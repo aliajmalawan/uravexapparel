@@ -351,6 +351,12 @@ T::eq(2, (int) $db->value("SELECT COUNT(*) FROM inventory_movements WHERE reason
 $res2 = CsvImport::commit(CsvImport::plan(CsvImport::parse($csv)), (int) $admin['id']);
 T::eq(1, $res2['updated'], 're-import updates instead of duplicating');
 T::eq(1, (int) $db->value('SELECT COUNT(*) FROM products'), 'no duplicate product');
+file_put_contents($csv, "product_sku,title,category,status,price,variant_sku,size,color,stock\n"
+    . "SKU2,Oxford Shirt Two,shirts,active,4990,SKU2-M,M,White,5\n"
+    . "SKU3,Oxford Shirt Three,shirts,active,4990,SKU3-M,M,White,5\n");
+$multiPlan = CsvImport::plan(CsvImport::parse($csv));
+T::eq(0, count($multiPlan['errors']), 'distinct products can be planned in one CSV');
+T::eq(2, $multiPlan['summary']['products'], 'multi-product CSV keeps both products');
 @unlink($csv);
 
 // ───────────────────────────────── Currency
