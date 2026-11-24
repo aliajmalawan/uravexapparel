@@ -36,3 +36,19 @@ Thirteen categories in a fixed grid left one orphan tile on its own row at deskt
 ## D-06 (2026-11-24) — Unverified copy is flagged, not rewritten
 
 Two owner-editable claims cannot be verified (see fact-sheet.md). They are left as the owner wrote them and reported to the user, because rewriting a business's story is the owner's decision.
+
+## D-07 (2026-11-24) — Upgrade docs live in `docs/homepage-upgrade/`
+
+The playbook places `UI-UPGRADE-AUDIT.md` at the project root. Here all upgrade docs sit in one folder so they do not mix with the app's own root files; nothing else changes.
+
+## D-08 (2026-11-24) — Performance budget: cut order applied
+
+Measured with Chromium at 4× CPU throttle (scroll through the whole page): first build p50 ≈ 150–480 ms per frame. Profiling isolated the cause (custom property written to the header every frame, which re-styled the header and its menu). Fixes, in the motion skill's cut order: (1) the per-card "bob" loops were removed and the remaining ambient loops (hero glow/ring, ticker) run only while on screen; (2) the header progress moved to its own element written with transform only; (3) all loop writes are change-guarded and every frame reads before it writes. Result: p50 33 ms, p95 33–83 ms (baseline page with no motion: 16.7 ms). Recorded as the accepted cost of a dial-3 motion system.
+
+## D-09 (2026-11-24) — Display size floor
+
+The display step's minimum is 40 px (2.5 rem) instead of the modular 37.9 px so the hero headline stays ≥ 2.5× body on phones (typography FE-142).
+
+## D-10 (2026-11-24) — Shared product card
+
+The whole product card is now its product link (title link stretched over the card; wishlist button kept above it). Card tags moved onto the type scale (12 px). Both changes apply to the shop listing as well, which shares the component; the shop page was re-checked (54 page×width checks, filters, sort, pagination). The old rule hiding cards 5+ on phones is now scoped to the home page — the shop listing on phones shows all 24 products per page again.
