@@ -11,7 +11,6 @@ $hero = $heroes[0] ?? null;
 $assurances = $home['assurances'] ?? [];
 $edits = array_values(array_filter($tiles, static fn ($t) => str_starts_with($t['href'], '/collections/')));
 $cats = array_values(array_filter($tiles, static fn ($t) => str_starts_with($t['href'], '/category/') && $t['image']));
-$catTotal = max(1, array_sum(array_map(static fn ($t) => (int) ($t['count'] ?? 0), $cats)));
 // Distinct product photos for the hero arch and the story frames.
 $photos = [];
 foreach (array_merge($newArrivals, $bestSellers) as $p) {
@@ -129,14 +128,13 @@ $grid = static function (array $items, array $wishlistIds): string {
       </div>
     </div>
     <ul class="hm-strip" id="cat-strip" tabindex="0" aria-label="Categories — scroll sideways for more" data-strip data-rv="stagger">
-      <?php foreach ($cats as $t): $share = (int) round(100 * (int) ($t['count'] ?? 0) / $catTotal); ?>
+      <?php foreach ($cats as $t): ?>
         <li><a class="hm-cat" href="<?= e(url($t['href'])) ?>">
           <span class="hm-cat-media"><img src="<?= e(media($t['image'], 400)) ?>" alt="" loading="lazy" width="400" height="500"></span>
           <span class="hm-cat-info">
             <strong><?= e($t['title']) ?></strong>
-            <?php if (!empty($t['count'])): ?><small><?= e(pluralize((int) $t['count'], 'product')) ?> · <?= $share ?>% of the store</small><?php endif; ?>
+            <?php if (!empty($t['count'])): ?><small><?= e(pluralize((int) $t['count'], 'product')) ?></small><?php endif; ?>
           </span>
-          <svg class="hm-cat-arc" viewBox="0 0 36 36" aria-hidden="true" focusable="false"><circle class="hm-arc-track" cx="18" cy="18" r="15"/><circle class="hm-arc-fill" cx="18" cy="18" r="15" pathLength="100" stroke-dasharray="<?= max(1, $share) ?> 100"/></svg>
         </a></li>
       <?php endforeach; ?>
     </ul>
