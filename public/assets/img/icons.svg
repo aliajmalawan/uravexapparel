@@ -67,4 +67,6 @@
   <symbol id="arrow-down" viewBox="0 0 24 24"><path d="M12 4v16M6 14l6 6 6-6"/></symbol>
   <symbol id="outdent" viewBox="0 0 24 24"><path d="M4 5v14M20 12H8M13 7l-5 5 5 5"/></symbol>
   <symbol id="indent" viewBox="0 0 24 24"><path d="M20 5v14M4 12h12M11 7l5 5-5 5"/></symbol>
+  <symbol id="pause" viewBox="0 0 24 24"><path d="M9 5v14M15 5v14"/></symbol>
+  <symbol id="play" viewBox="0 0 24 24"><path d="M8 5l11 7-11 7z"/></symbol>
 </svg>

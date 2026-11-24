@@ -375,3 +375,163 @@
     });
   });
 })();
+
+/* ---------- Home motion (dial 3): one rAF loop, lerped scroll, JS-gated reveals with watchdogs ----------
+   The page is complete without this script. Under reduced motion nothing below runs except the
+   category-strip buttons (no animation). Any error lands every armed element in its final state. */
+(function () {
+  'use strict';
+  const root = document.querySelector('[data-home]');
+  if (!root) return;
+  const html = document.documentElement;
+  html.classList.add('hm-js');
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Category strip: buttons + seam progress (works with or without motion).
+  const strip = root.querySelector('[data-strip]');
+  const stripBar = root.querySelector('[data-strip-progress]');
+  const prev = root.querySelector('[data-strip-prev]');
+  const next = root.querySelector('[data-strip-next]');
+  const stripState = () => {
+    if (!strip) return;
+    const max = strip.scrollWidth - strip.clientWidth;
+    const p = max > 0 ? strip.scrollLeft / max : 1;
+    if (stripBar) stripBar.style.setProperty('--hm-strip', String(Math.max(0.06, Math.min(1, max > 0 ? (strip.clientWidth + strip.scrollLeft) / strip.scrollWidth : 1))));
+    if (prev) prev.disabled = p <= 0.01;
+    if (next) next.disabled = p >= 0.99;
+  };
+  if (strip) {
+    const page = (dir) => strip.scrollBy({ left: dir * strip.clientWidth * 0.85, behavior: reduce ? 'auto' : 'smooth' });
+    prev?.addEventListener('click', () => page(-1));
+    next?.addEventListener('click', () => page(1));
+    strip.addEventListener('scroll', () => requestAnimationFrame(stripState), { passive: true });
+    window.addEventListener('resize', stripState, { passive: true });
+    stripState();
+  }
+  if (reduce) return;
+
+  const revealAll = () => root.querySelectorAll('.rv-armed').forEach((el) => { el.classList.remove('rv-armed'); el.classList.add('rv-in'); });
+  try {
+    html.classList.add('hm-motion');
+    document.body.classList.add('hm-page');
+    const header = document.querySelector('.site-header');
+    let seam = null;
+    if (header) { seam = document.createElement('span'); seam.className = 'hm-header-seam'; seam.setAttribute('aria-hidden', 'true'); header.appendChild(seam); }
+    // change-guarded writes: a style is only touched when its value actually changes
+    const last = new WeakMap();
+    const put = (el, v) => { if (last.get(el) !== v) { last.set(el, v); el.style.transform = v; } };
+    const vh = () => window.innerHeight || 800;
+
+    // Ticker pause control (FE-089: loops longer than a few seconds are stoppable).
+    const ticker = root.querySelector('[data-ticker]');
+    const toggle = root.querySelector('[data-ticker-toggle]');
+    if (ticker && toggle) {
+      toggle.addEventListener('click', () => {
+        const paused = ticker.classList.toggle('is-paused');
+        toggle.setAttribute('aria-pressed', String(paused));
+        const label = toggle.querySelector('.sr-only');
+        if (label) label.textContent = paused ? 'Play the moving category list' : 'Pause the moving category list';
+        const use = toggle.querySelector('use');
+        if (use) use.setAttribute('href', use.getAttribute('href').replace(/#(pause|play)$/, paused ? '#play' : '#pause'));
+      });
+    }
+
+    // Ambient loops (hero glow/ring, ticker) run only while their section is on screen.
+    const live = 'IntersectionObserver' in window ? new IntersectionObserver((entries) => entries.forEach((e) => e.target.classList.toggle('is-live', e.isIntersecting))) : null;
+    [root.querySelector('.hm-hero'), ticker].forEach((el) => { if (!el) return; if (live) live.observe(el); else el.classList.add('is-live'); });
+
+    // Reveals: arm only what is below the first viewport, so nothing on screen ever blinks out.
+    const items = [...root.querySelectorAll('[data-rv]')].filter((el) => el.getBoundingClientRect().top > vh() * 0.9);
+    const armed = new Set();
+    items.forEach((el) => {
+      el.classList.add('rv-armed');
+      armed.add(el);
+      if (el.dataset.rv === 'stagger') [...el.children].forEach((c, i) => { c.style.transitionDelay = (Math.min(i, 6) * 60) + 'ms'; });
+    });
+    // Arcs (category share, offer %) draw from empty to their real value when revealed.
+    const arcs = [...root.querySelectorAll('.hm-arc-fill')].map((c) => {
+      const len = parseFloat((c.getAttribute('stroke-dasharray') || '0').split(' ')[0]) || 0;
+      const host = c.closest('[data-rv]');
+      if (host && armed.has(host)) c.style.strokeDashoffset = String(len);
+      return { c, len, host };
+    });
+    // Counters: real figures only (data-count), counted once from 0 when revealed.
+    const counters = [...root.querySelectorAll('[data-count]')].map((el) => ({ el, to: parseInt(el.dataset.count, 10) || 0, suffix: el.dataset.suffix || '', host: el.closest('[data-rv]'), started: false, t0: 0 }));
+    const fmt = (n) => n.toLocaleString('en-US');
+    counters.forEach((k) => { if (k.host && armed.has(k.host)) k.el.textContent = '0' + k.suffix; else k.started = true; });
+
+    const reveal = (el) => {
+      if (!armed.has(el)) return;
+      armed.delete(el);
+      el.classList.remove('rv-armed');
+      el.classList.add('rv-in');
+      arcs.forEach((a) => { if (a.host === el) a.c.style.strokeDashoffset = '0'; });
+      counters.forEach((k) => { if (k.host === el && !k.started) { k.started = true; k.t0 = performance.now(); } });
+      kick();
+    };
+    // Primary trigger: IntersectionObserver. Backups: the loop re-checks armed elements in view,
+    // and a watchdog lands everything in its final state if neither path fires.
+    const io = 'IntersectionObserver' in window ? new IntersectionObserver((entries) => entries.forEach((e) => { if (e.isIntersecting) { reveal(e.target); io.unobserve(e.target); } }), { rootMargin: '0px 0px -8% 0px' }) : null;
+    armed.forEach((el) => io?.observe(el));
+    setTimeout(() => { armed.forEach((el) => { if (el.getBoundingClientRect().top < vh()) reveal(el); }); }, 2500);
+    setTimeout(() => { armed.forEach(reveal); }, 9000);
+
+    // Parallax + tilt targets.
+    const floats = [...root.querySelectorAll('.hm-hero [data-depth]')];
+    const frames = [...root.querySelectorAll('.hm-story [data-depth]')];
+    const hero = root.querySelector('.hm-hero');
+    const arch = root.querySelector('[data-tilt] .hm-arch-frame');
+    const fine = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+    let tx = 0, ty = 0, cx = 0, cy = 0;
+    if (arch && fine) {
+      const host = arch.closest('[data-tilt]');
+      host.addEventListener('pointermove', (e) => { const r = host.getBoundingClientRect(); tx = ((e.clientX - r.left) / r.width - 0.5) * 2; ty = ((e.clientY - r.top) / r.height - 0.5) * 2; kick(); });
+      host.addEventListener('pointerleave', () => { tx = 0; ty = 0; kick(); });
+    }
+
+    // The one loop: lerp scroll toward its target, then read everything, then write everything
+    // (no read-after-write inside a frame), re-check reveals, tick counters; idles when settled.
+    let target = window.scrollY, smooth = target, running = false;
+    let viewH = vh(), docH = document.documentElement.scrollHeight - viewH, heroH = hero ? hero.offsetHeight : 0;
+    const measure = () => { viewH = vh(); docH = document.documentElement.scrollHeight - viewH; heroH = hero ? hero.offsetHeight : 0; };
+    const step = (now) => {
+      smooth += (target - smooth) * 0.14;
+      if (Math.abs(target - smooth) < 0.4) smooth = target;
+      cx += (tx - cx) * 0.12; cy += (ty - cy) * 0.12;
+      if (Math.abs(tx - cx) < 0.002) cx = tx;
+      if (Math.abs(ty - cy) < 0.002) cy = ty;
+      // reads
+      const frameRects = frames.map((f) => f.getBoundingClientRect());
+      const due = [];
+      armed.forEach((el) => { if (el.getBoundingClientRect().top < viewH * 0.92) due.push(el); });
+      // writes
+      if (seam) put(seam, 'scaleX(' + (docH > 0 ? Math.min(1, smooth / docH).toFixed(3) : '1') + ')');
+      if (smooth < heroH + viewH) floats.forEach((f) => put(f, 'translate3d(0,' + (-smooth * parseFloat(f.dataset.depth)).toFixed(1) + 'px,0)'));
+      frames.forEach((f, i) => {
+        const r = frameRects[i]; const img = f.firstElementChild;
+        if (!img || r.bottom < 0 || r.top > viewH) return;
+        put(img, 'translate3d(0,' + ((r.top + r.height / 2 - viewH / 2) * parseFloat(f.dataset.depth)).toFixed(1) + 'px,0) scale(1.12)');
+      });
+      if (arch) put(arch, 'rotateY(' + (cx * 4).toFixed(2) + 'deg) rotateX(' + (-cy * 4).toFixed(2) + 'deg)');
+      due.forEach(reveal);
+      let busy = false;
+      counters.forEach((k) => {
+        if (!k.started || !k.t0) return;
+        const t = Math.min(1, (now - k.t0) / 1400);
+        const eased = 1 - Math.pow(1 - t, 3);
+        k.el.textContent = fmt(Math.round(k.to * eased)) + k.suffix;
+        if (t < 1) busy = true; else k.t0 = 0;
+      });
+      const settled = smooth === target && cx === tx && cy === ty;
+      if (!settled || busy) requestAnimationFrame(step); else running = false;
+    };
+    function kick() { if (!running) { running = true; requestAnimationFrame(step); } }
+    window.addEventListener('scroll', () => { target = window.scrollY; kick(); }, { passive: true });
+    window.addEventListener('resize', () => { measure(); kick(); }, { passive: true });
+    window.addEventListener('load', () => { measure(); kick(); });
+    kick();
+  } catch (err) {
+    revealAll();
+    html.classList.remove('hm-motion');
+  }
+})();
