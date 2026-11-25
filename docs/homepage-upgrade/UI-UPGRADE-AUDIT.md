@@ -76,14 +76,14 @@ Header, footer, shop/product/checkout/admin pages (D-01); owner-written copy (D-
 |---|---|---|---|---|---|
 | E1 | Hero product arch + "N+ styles in store" counter | Featured product, its category, price; the live product count | Gold emblem ring as frame, silver headline | Own grid column; tag inside frame | Tilt on the shared loop; counter real (data-count) |
 | E2 | Header seam = reading progress | Position in the page | The gold line under the logo | Header's own bottom edge | Lerped scroll progress, one loop |
-| E3 | Category share arcs | Each category's share of the store (count / total) | Gold ring | Tile corner, beside the text it measures | Draws on reveal |
+| ~~E3~~ | ~~Category share arcs~~ | Removed at the owner's request (D-11) | | | |
 | E4 | Category strip seam | How much of the category list is in view | Gold seam | Under the strip | Bound to the strip's scroll |
 | E5 | Store figures counters | Products, categories, colours, states (all sourced) | Gold display numerals | Story column | Count once on reveal; final value without JS |
 | E6 | Offer ring | The deal's real % off | Ring in sale red | Offer media corner | Draws on reveal |
 | E7 | Category ticker | Every category with its count, as links | Gold stitch dots, display type | Its own band | One marquee; pausable; on-screen only |
 | E8 | Hero floating product cards | Two more real products with prices | White cards on the gold arch | Edges of the arch column | Parallax on the shared loop |
 
-8 elements (5–20 required). All four tests hold for each; with the script off, E1/E3/E5/E6 show their final values and E7 becomes a static scrollable list.
+7 elements after D-11 (5–20 required). All four tests hold for each; with the script off, E1/E3/E5/E6 show their final values and E7 becomes a static scrollable list.
 
 ## Closing summary (2026-11-24)
 

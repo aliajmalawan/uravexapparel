@@ -52,3 +52,7 @@ The display step's minimum is 40 px (2.5 rem) instead of the modular 37.9 px so 
 ## D-10 (2026-11-24) — Shared product card
 
 The whole product card is now its product link (title link stretched over the card; wishlist button kept above it). Card tags moved onto the type scale (12 px). Both changes apply to the shop listing as well, which shares the component; the shop page was re-checked (54 page×width checks, filters, sort, pagination). The old rule hiding cards 5+ on phones is now scoped to the home page — the shop listing on phones shows all 24 products per page again.
+
+## D-11 (2026-11-25) — Category progress rings removed (owner request)
+
+The owner asked to remove the progress ring and its "% of the store" text from the category tiles. Removed from `home.php` and `app.css`; tiles now show the category name and product count only. Signature elements drop from 8 to 7 (still within 5–20); the offer ring keeps the shared arc styles. Re-checked: 0 overflow at 320–1440 px, 0 hidden content (JS off and reduced motion), 29/29 links, suite 540 passed.
