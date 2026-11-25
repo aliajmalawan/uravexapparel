@@ -220,10 +220,60 @@ final class Catalog
              WHERE ' . self::VISIBLE . " AND o.status IN ('confirmed','processing','packed','shipped','delivered') AND o.is_test = 0
              GROUP BY p.id ORDER BY sold DESC LIMIT " . $limit
         );
+        // Too few real sales to rank honestly: the section stays hidden.
         if (count($rows) < min(4, $limit)) {
-            return self::featured($limit);
+            return [];
         }
         return self::hydrateCards($rows);
+    }
+
+    /**
+     * Homepage picks: products the admin marked featured first, then the newest piece
+     * from each category (one per category) to fill the row. Skips $exclude ids.
+     */
+    public static function featuredHome(int $limit = 8, array $exclude = []): array
+    {
+        $skip = array_fill_keys(array_map('intval', $exclude), true);
+        $pick = [];
+        foreach (self::featured($limit + count($skip)) as $p) {
+            if (!isset($skip[(int) $p['id']]) && count($pick) < $limit) {
+                $pick[(int) $p['id']] = $p;
+            }
+        }
+        if (count($pick) < $limit) {
+            $rows = Database::get()->all(
+                'SELECT p.id, p.title, p.slug, p.price_minor, p.sale_price_minor, p.currency, p.published_at, p.category_id FROM products p WHERE ' . self::VISIBLE
+                . ' AND EXISTS (SELECT 1 FROM product_images pi WHERE pi.product_id = p.id) ORDER BY p.published_at DESC, p.id DESC LIMIT 400'
+            );
+            $seen = [];
+            $extra = [];
+            foreach ($rows as $r) {
+                $id = (int) $r['id'];
+                $cat = (int) $r['category_id'];
+                if (isset($skip[$id]) || isset($pick[$id]) || isset($seen[$cat])) {
+                    continue;
+                }
+                $seen[$cat] = true;
+                $extra[] = $r;
+                if (count($pick) + count($extra) >= $limit) {
+                    break;
+                }
+            }
+            return array_merge(array_values($pick), self::hydrateCards($extra));
+        }
+        return array_values($pick);
+    }
+
+    /** Products with a real markdown, deepest discount first. Skips $exclude ids. */
+    public static function onSale(int $limit = 8, array $exclude = []): array
+    {
+        $ids = array_values(array_filter(array_map('intval', $exclude)));
+        $not = $ids ? ' AND p.id NOT IN (' . implode(',', $ids) . ')' : '';
+        return self::hydrateCards(Database::get()->all(
+            'SELECT p.id, p.title, p.slug, p.price_minor, p.sale_price_minor, p.currency, p.published_at, p.category_id FROM products p WHERE ' . self::VISIBLE
+            . ' AND p.sale_price_minor > 0 AND p.sale_price_minor < p.price_minor' . $not
+            . ' ORDER BY (p.price_minor - p.sale_price_minor) / p.price_minor DESC, p.published_at DESC, p.id DESC LIMIT ' . $limit
+        ));
     }
 
     /** Active categories; product_count includes products in a category's active subcategories. */

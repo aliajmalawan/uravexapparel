@@ -56,3 +56,7 @@ The whole product card is now its product link (title link stretched over the ca
 ## D-11 (2026-11-25) — Category progress rings removed (owner request)
 
 The owner asked to remove the progress ring and its "% of the store" text from the category tiles. Removed from `home.php` and `app.css`; tiles now show the category name and product count only. Signature elements drop from 8 to 7 (still within 5–20); the offer ring keeps the shared arc styles. Re-checked: 0 overflow at 320–1440 px, 0 hidden content (JS off and reduced motion), 29/29 links, suite 540 passed.
+
+## D-12 (2026-11-25) — Featured and On-sale product sections (owner request)
+
+The owner asked for featured, new and best-selling/sale product rows in the New Arrivals style. Added two sections with the same head row + card grid: **Featured products** (admin-flagged products first, then the newest piece from each category) after New arrivals, and **On sale now** (real markdowns, deepest discount first, links to `/sale`) after the offer. Each row skips products already shown above it, so no product repeats. **Best sellers** now hides itself until at least 4 products have sold in paid orders, instead of showing other products under that title. All three are switchable with titles and counts in Admin → Content → Homepage. Also fixed: a 20 px phone overflow at load from armed side reveals (`.hm { overflow-x: clip }`). Re-checked: overflow 0 at 320–1440 px (load and after scroll), axe 0 violations (1440, 390), 45/45 links, reduced motion and JS off 0 hidden, suite 540 passed.

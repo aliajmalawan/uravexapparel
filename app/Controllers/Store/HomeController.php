@@ -18,10 +18,19 @@ final class HomeController extends Controller
     {
         $store = Settings::get('store');
         $sec = Settings::get('sections');
+        $newArrivals = !empty($sec['show_new']) ? Catalog::newArrivals(max(1, (int) $sec['new_count'])) : [];
+        $bestSellers = !empty($sec['show_bestsellers']) ? Catalog::bestSellers(max(1, (int) $sec['bestsellers_count'])) : [];
+        // Each product section skips pieces already shown above it, so rows never repeat.
+        $shown = array_column(array_merge($newArrivals, $bestSellers), 'id');
+        $featured = !empty($sec['show_featured']) ? Catalog::featuredHome(max(1, (int) ($sec['featured_count'] ?? 8)), $shown) : [];
+        $shown = array_merge($shown, array_column($featured, 'id'));
+        $onSale = !empty($sec['show_sale']) ? Catalog::onSale(max(1, (int) ($sec['sale_count'] ?? 8)), $shown) : [];
         return $this->view('store/home', [
             'heroes' => Content::banners('hero', 3),
-            'newArrivals' => !empty($sec['show_new']) ? Catalog::newArrivals(max(1, (int) $sec['new_count'])) : [],
-            'bestSellers' => !empty($sec['show_bestsellers']) ? Catalog::bestSellers(max(1, (int) $sec['bestsellers_count'])) : [],
+            'newArrivals' => $newArrivals,
+            'bestSellers' => $bestSellers,
+            'featured' => $featured,
+            'onSale' => $onSale,
             'collections' => !empty($sec['show_collections']) ? Catalog::collections(true) : [],
             'promos' => !empty($sec['show_promos']) ? Content::banners('promo', 2) : [],
             'sec' => $sec,

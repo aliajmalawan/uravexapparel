@@ -95,6 +95,8 @@ final class Settings
             'show_new' => true, 'new_eyebrow' => 'Just landed', 'new_title' => 'New arrivals', 'new_count' => 8,
             'show_collections' => true, 'collections_eyebrow' => 'Curated', 'collections_title' => 'Featured collections',
             'show_bestsellers' => true, 'bestsellers_eyebrow' => 'Most loved', 'bestsellers_title' => 'Best sellers', 'bestsellers_count' => 8,
+            'show_featured' => true, 'featured_eyebrow' => 'Editor\'s picks', 'featured_title' => 'Featured products', 'featured_count' => 8,
+            'show_sale' => true, 'sale_eyebrow' => 'Limited time', 'sale_title' => 'On sale now', 'sale_count' => 8,
             'show_promos' => true, 'show_story' => false, 'show_assurances' => false, 'show_newsletter' => false,
             // Marketplace-style layout blocks.
             'show_category_rail' => true,

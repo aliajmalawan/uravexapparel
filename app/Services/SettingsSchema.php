@@ -34,6 +34,8 @@ final class SettingsSchema
             'show_new' => 'bool', 'new_eyebrow' => 'string|max:80', 'new_title' => 'string|max:120', 'new_count' => 'required|int|min:1|max:24',
             'show_collections' => 'bool', 'collections_eyebrow' => 'string|max:80', 'collections_title' => 'string|max:120',
             'show_bestsellers' => 'bool', 'bestsellers_eyebrow' => 'string|max:80', 'bestsellers_title' => 'string|max:120', 'bestsellers_count' => 'required|int|min:1|max:24',
+            'show_featured' => 'bool', 'featured_eyebrow' => 'string|max:80', 'featured_title' => 'string|max:120', 'featured_count' => 'int|min:1|max:24',
+            'show_sale' => 'bool', 'sale_eyebrow' => 'string|max:80', 'sale_title' => 'string|max:120', 'sale_count' => 'int|min:1|max:24',
             'show_promos' => 'bool', 'show_story' => 'bool', 'show_assurances' => 'bool', 'show_newsletter' => 'bool',
             'show_category_rail' => 'bool', 'show_discover' => 'bool', 'show_rails' => 'bool', 'rails_count' => 'int|min:1|max:8',
             'show_signup' => 'bool', 'signup_eyebrow' => 'string|max:60', 'signup_title' => 'string|max:120', 'signup_body' => 'string|max:400', 'signup_cta' => 'string|max:40',

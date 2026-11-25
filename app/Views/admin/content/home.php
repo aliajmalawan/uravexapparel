@@ -5,13 +5,20 @@ $cb = static fn (string $k, string $label) => '<label class="check"><input type=
 ?>
 <form class="card admin-form" method="post" action="<?= e(url('/admin/content/settings/sections')) ?>" novalidate>
   <?= csrf_field() ?>
-  <div class="card-head"><h2>Homepage sections</h2><span class="definition">Order: category bar → promo banner → Discover tiles → new arrivals → more tiles → best sellers → category rows → promo bands → story → assurances → newsletter → sign-up banner</span></div>
+  <div class="card-head"><h2>Homepage sections</h2><span class="definition">Order: category bar → promo banner → Discover tiles → new arrivals → featured products → more tiles → best sellers → on sale → category rows → promo bands → story → assurances → newsletter → sign-up banner</span></div>
   <div class="form-row c3">
     <div><h3 class="small">Hero (used when no hero banner is active)</h3><?= $tf('hero_eyebrow', 'Eyebrow', 80) ?><?= $tf('hero_title', 'Heading') ?><?= $tf('hero_subtitle', 'Text', 320) ?></div>
     <div><h3 class="small">New arrivals</h3><?= $cb('show_new', 'Show section') ?><?= $tf('new_eyebrow', 'Eyebrow', 80) ?><?= $tf('new_title', 'Heading', 120) ?>
       <div class="field"><label for="s-new_count">Products shown</label><input class="input" id="s-new_count" name="new_count" type="number" min="1" max="24" value="<?= (int) ($sec['new_count'] ?? 8) ?>"></div></div>
     <div><h3 class="small">Best sellers</h3><?= $cb('show_bestsellers', 'Show section') ?><?= $tf('bestsellers_eyebrow', 'Eyebrow', 80) ?><?= $tf('bestsellers_title', 'Heading', 120) ?>
-      <div class="field"><label for="s-bestsellers_count">Products shown</label><input class="input" id="s-bestsellers_count" name="bestsellers_count" type="number" min="1" max="24" value="<?= (int) ($sec['bestsellers_count'] ?? 8) ?>"></div></div>
+      <div class="field"><label for="s-bestsellers_count">Products shown</label><input class="input" id="s-bestsellers_count" name="bestsellers_count" type="number" min="1" max="24" value="<?= (int) ($sec['bestsellers_count'] ?? 8) ?>"></div>
+      <p class="xsmall muted">Shown once at least 4 products have sold in paid orders.</p></div>
+    <div><h3 class="small">Featured products</h3><?= $cb('show_featured', 'Show section') ?><?= $tf('featured_eyebrow', 'Eyebrow', 80) ?><?= $tf('featured_title', 'Heading', 120) ?>
+      <div class="field"><label for="s-featured_count">Products shown</label><input class="input" id="s-featured_count" name="featured_count" type="number" min="1" max="24" value="<?= (int) ($sec['featured_count'] ?? 8) ?>"></div>
+      <p class="xsmall muted">Products marked “Featured on homepage” come first; the row is filled with the newest piece from each category.</p></div>
+    <div><h3 class="small">On sale</h3><?= $cb('show_sale', 'Show section') ?><?= $tf('sale_eyebrow', 'Eyebrow', 80) ?><?= $tf('sale_title', 'Heading', 120) ?>
+      <div class="field"><label for="s-sale_count">Products shown</label><input class="input" id="s-sale_count" name="sale_count" type="number" min="1" max="24" value="<?= (int) ($sec['sale_count'] ?? 8) ?>"></div>
+      <p class="xsmall muted">Products with a sale price, biggest discount first.</p></div>
     <div><h3 class="small">Featured collections</h3><?= $cb('show_collections', 'Show section') ?><?= $tf('collections_eyebrow', 'Eyebrow', 80) ?><?= $tf('collections_title', 'Heading', 120) ?></div>
     <div><h3 class="small">Layout blocks</h3><?= $cb('show_discover', 'Discover tiles (collections & categories)') ?><?= $cb('show_rails', 'Product rows per category') ?>
       <div class="field"><label for="s-rails_count">Number of category rows</label><input class="input" id="s-rails_count" name="rails_count" type="number" min="1" max="8" value="<?= (int) ($sec['rails_count'] ?? 3) ?>"></div>

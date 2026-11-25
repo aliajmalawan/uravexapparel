@@ -84,7 +84,7 @@ $phone = trim((string) ($store['support_phone'] ?? ''));
         <?php foreach ($policyPages as $p): if (!in_array($p['slug'], ['privacy-policy', 'terms'], true)) continue; ?><a href="<?= e(url('/pages/' . $p['slug'])) ?>"><?= e($p['title']) ?></a><?php endforeach; ?>
       </span>
       <span class="footer-legal-currency"><?= App\Core\View::partial('partials/currency-switcher', ['place' => 'f']) ?></span>
-      <a href="#top" class="ft-totop"><?= icon('arrow-up', 'icon icon-sm') ?> Back to top</a>
+      <a href="#top" class="ft-totop"><span class="ft-totop-label">Back to top</span><span class="ft-totop-chip" aria-hidden="true"><?= icon('arrow-up', 'icon icon-sm') ?></span></a>
     </div>
   </div>
 </footer>

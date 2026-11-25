@@ -1,8 +1,8 @@
 <?php
 /**
  * Homepage: hero (copy + product arch) → promises → category strip → new arrivals →
- * story & figures → collections → featured offer → best sellers → delivery / sell →
- * membership. Texts, banners and section switches: Admin → Content → Homepage.
+ * featured products → story & figures → collections → featured offer → on sale →
+ * best sellers → delivery / sell → membership. Texts, banners and section switches: Admin → Content → Homepage.
  *
  * Content is complete in the HTML; motion (public/assets/js/app.js, "Home motion")
  * only enhances it and is skipped entirely under reduced motion or with JS off.
@@ -13,7 +13,7 @@ $edits = array_values(array_filter($tiles, static fn ($t) => str_starts_with($t[
 $cats = array_values(array_filter($tiles, static fn ($t) => str_starts_with($t['href'], '/category/') && $t['image']));
 // Distinct product photos for the hero arch and the story frames.
 $photos = [];
-foreach (array_merge($newArrivals, $bestSellers) as $p) {
+foreach (array_merge($newArrivals, $featured, $bestSellers) as $p) {
     if ($p['image'] && !isset($photos[$p['image']])) {
         $photos[$p['image']] = $p;
     }
@@ -23,7 +23,7 @@ $heroPhoto = $photos[0] ?? null;
 $heroCards = array_slice($photos, 1, 2);
 $storyPhotos = array_slice($photos, 3, 2);
 $saleItem = null;
-foreach (array_merge($bestSellers, $newArrivals) as $p) {
+foreach (array_merge($onSale, $bestSellers, $newArrivals, $featured) as $p) {
     if (!empty($p['on_sale']) && $p['image']) {
         $saleItem = $p;
         break;
@@ -156,8 +156,21 @@ $grid = static function (array $items, array $wishlistIds): string {
 </section>
 <?php endif; ?>
 
+<?php /* ── Featured products ── */ ?>
+<?php if ($featured): ?>
+<section class="hm-section" aria-labelledby="featured-title">
+  <div class="container">
+    <div class="hm-head-row">
+      <?= $head($sec['featured_eyebrow'] ?? '' ?: 'Editor\'s picks', $sec['featured_title'] ?? '' ?: 'Featured products', 'featured-title') ?>
+      <a class="hm-link" href="<?= e(url('/shop')) ?>">Shop all <?= icon('arrow-right', 'icon icon-sm') ?></a>
+    </div>
+    <div class="hp-products hm-products"><?= $grid($featured, $wishlistIds) ?></div>
+  </div>
+</section>
+<?php endif; ?>
+
 <?php /* ── Story + store figures ── */ ?>
-<section class="hm-section hm-story" aria-labelledby="about-title">
+<section class="hm-section hm-story<?= $featured ? ' hm-soft' : '' ?>" aria-labelledby="about-title">
   <div class="container hm-story-grid">
     <div class="hm-story-art" aria-hidden="true">
       <?php foreach ($storyPhotos as $i => $p): ?>
@@ -237,9 +250,22 @@ $grid = static function (array $items, array $wishlistIds): string {
 </section>
 <?php endif; ?>
 
+<?php /* ── On sale ── */ ?>
+<?php if ($onSale): ?>
+<section class="hm-section hm-soft" aria-labelledby="sale-title">
+  <div class="container">
+    <div class="hm-head-row">
+      <?= $head($sec['sale_eyebrow'] ?? '' ?: 'Limited time', $sec['sale_title'] ?? '' ?: 'On sale now', 'sale-title') ?>
+      <a class="hm-link" href="<?= e(url('/sale')) ?>">View all deals <?= icon('arrow-right', 'icon icon-sm') ?></a>
+    </div>
+    <div class="hp-products hm-products"><?= $grid($onSale, $wishlistIds) ?></div>
+  </div>
+</section>
+<?php endif; ?>
+
 <?php /* ── Best sellers ── */ ?>
 <?php if ($bestSellers): ?>
-<section class="hm-section hm-soft" aria-labelledby="best-title">
+<section class="hm-section<?= $onSale ? '' : ' hm-soft' ?>" aria-labelledby="best-title">
   <div class="container">
     <div class="hm-head-row">
       <?= $head($sec['bestsellers_eyebrow'] ?: 'Most loved', $sec['bestsellers_title'] ?: 'Best sellers', 'best-title') ?>
